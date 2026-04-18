@@ -12,7 +12,7 @@ var NguoiDung = require('../models/nguoidung');
 passport.use(new GoogleStrategy({
     clientID: '51334060724-iotk0ov11rsaqg4o446to24k7nrnb5vs.apps.googleusercontent.com',
     clientSecret: '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',
-    callbackURL: "http://localhost:3000/auth/google/callback"
+    callbackURL: "https://webbanvedtdm-v2.onrender.com/auth/google/callback"
   },
   async function(accessToken, refreshToken, profile, cb) {
       try {
