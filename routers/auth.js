@@ -53,6 +53,13 @@ router.get('/dangky', (req, res) => {
 // đăng ký tài khoản mới
 router.post('/dangky', async (req, res) => {
     try {
+        // mật khẩu xác nhận
+        if (req.body.MatKhau !== req.body.XacNhanMatKhau) {
+            req.session.error = 'Mật khẩu xác nhận không khớp! Vui lòng nhập lại.';
+            return req.session.save(() => { res.redirect('/auth/dangky') });
+        }
+
+        // kiêm tra email 
         if (req.body.Email) {
             var emailDaTonTai = await NguoiDung.findOne({ Email: req.body.Email });
             if (emailDaTonTai) {
@@ -61,12 +68,14 @@ router.post('/dangky', async (req, res) => {
             }
         }
 
+        // kiểm tra Tên đăng nhập
         var userDaTonTai = await NguoiDung.findOne({ TenDangNhap: req.body.TenDangNhap });
         if (userDaTonTai) {
             req.session.error = 'Tên đăng nhập này đã có người sử dụng!';
             return req.session.save(() => { res.redirect('/auth/dangky') });
         }
 
+        // tạo tài khoản
         var salt = bcrypt.genSaltSync(10);
         var duLieuNguoiDung = {
             HoVaTen: req.body.HoVaTen,
