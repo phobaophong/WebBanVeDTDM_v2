@@ -6,9 +6,7 @@ var passport = require('passport');
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 var NguoiDung = require('../models/nguoidung');
 
-// ==========================================
-// CẤU HÌNH THUẬT TOÁN ĐĂNG NHẬP GOOGLE
-// ==========================================
+// api google
 passport.use(new GoogleStrategy({
     clientID: '51334060724-iotk0ov11rsaqg4o446to24k7nrnb5vs.apps.googleusercontent.com',
     clientSecret: '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',
@@ -47,15 +45,12 @@ passport.use(new GoogleStrategy({
   }
 ));
 
-// ==========================================
-// ĐĂNG KÝ
-// ==========================================
-// GET: Thêm session vào để hiển thị lỗi mượt mà
+// đăng ký
 router.get('/dangky', (req, res) => {
     res.render('dangky', { title: 'Đăng ký tài khoản', session: req.session });
 });
 
-// POST: Xử lý dữ liệu đăng ký (Đã khắc phục lỗi Race Condition)
+// đăng ký tài khoản mới
 router.post('/dangky', async (req, res) => {
     try {
         if (req.body.Email) {
@@ -93,15 +88,12 @@ router.post('/dangky', async (req, res) => {
     }
 });
 
-// ==========================================
-// ĐĂNG NHẬP THƯỜNG
-// ==========================================
-// GET: Thêm session vào
+// đăng nhập
 router.get('/dangnhap', (req, res) => {
     res.render('dangnhap', { title: 'Đăng nhập', session: req.session });
 });
 
-// POST: Đã khắc phục lỗi Race Condition
+// đăng nhập bằng tài khoản đã tạo
 router.post('/dangnhap', async (req, res) => {
     try {
         var user = await NguoiDung.findOne({ TenDangNhap: req.body.TenDangNhap }).exec();
@@ -135,9 +127,7 @@ router.post('/dangnhap', async (req, res) => {
     }
 });
 
-// ==========================================
-// API ĐĂNG NHẬP BẰNG GOOGLE
-// ==========================================
+// đăng nhập bằng google
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/google/callback', 
@@ -158,17 +148,13 @@ router.get('/google/callback',
   }
 );
 
-// ==========================================
-// ĐĂNG XUẤT
-// ==========================================
+// đăng xuất
 router.get('/dangxuat', (req, res) => {
     req.session.destroy(); 
     res.redirect('/');
 });
 
-// ==========================================
-// ĐỔI MẬT KHẨU
-// ==========================================
+// đổi mật khẩu
 router.get('/doimatkhau', (req, res) => {
     if (!req.session.MaNguoiDung) {
         return res.redirect('/auth/dangnhap');

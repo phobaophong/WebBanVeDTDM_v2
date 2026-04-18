@@ -15,16 +15,14 @@ var kiemTraAdmin = (req, res, next) => {
     }
 };
 
-// ==========================================
-// 1. DASHBOARD (Bảng điều khiển) - Đường dẫn: /admin/
-// ==========================================
+// bảng điều khiển thốg kê
 router.get('/', async (req, res) => {
     try {
-        // Đếm số lượng từ DB
+        // đếm
         var tongTran = await TranDau.countDocuments();
         var tongNguoiDung = await NguoiDung.countDocuments({ QuyenHan: 'user' });
 
-        // Tính doanh thu và số vé
+        // doanh thu
         var cacDonHang = await DonHang.find().exec();
         var tongDoanhThu = 0;
         var tongVe = 0;
@@ -34,7 +32,6 @@ router.get('/', async (req, res) => {
             tongVe += dh.SoLuong;
         });
 
-        // Trỏ đúng ra thư mục admin bên ngoài views
         res.render('../admin/index', {
             title: 'Bảng Điều Khiển (Dashboard)',
             tongTran: tongTran,
@@ -48,12 +45,10 @@ router.get('/', async (req, res) => {
     }
 });
 
-// ==========================================
-// 2. QUẢN LÝ TRẬN ĐẤU
-// ==========================================
+// quản lý trận đấu (get)
 router.get('/trandau', async (req, res) => {
     try {
-        // Lấy danh sách trận đấu, trận nào đá sau thì xếp lên trước
+        // lấy ds trận đấu
         var danhSachTranDau = await TranDau.find().sort({ ThoiGian: -1 }).exec();
 
         res.render('../admin/trandau', {
@@ -67,19 +62,14 @@ router.get('/trandau', async (req, res) => {
     }
 });
 
-// ==========================================
-// 3. THÊM TRẬN ĐẤU MỚI (GIAO DIỆN KÉO API)
-// ==========================================
 router.get('/themtran', async (req, res) => {
     try {
-        var giaidauDaChon = req.query.giaidau; // Lấy tên giải đấu từ thanh URL
-        var trandauDb = []; // Mảng chứa các trận đang có trong DB
+        var giaidauDaChon = req.query.giaidau; 
+        var trandauDb = []; 
 
-        // Danh sách các giải bạn muốn quản lý
         var danhSachGiaiDau = ['Ngoại hạng Anh', 'La Liga', 'Serie A', 'Bundesliga', 'Ligue 1'];
 
         if (giaidauDaChon) {
-            // Nếu có chọn giải, tìm trong DB các trận thuộc giải này, xếp theo thời gian mới nhất
             trandauDb = await TranDau.find({ GiaiDau: giaidauDaChon }).sort({ ThoiGian: -1 }).exec();
         }
 
@@ -107,12 +97,10 @@ var mapSucChua = {
     'Villa Park': 42682,
     'Goodison Park': 39572,
     'London Stadium': 62500,
-    'Mặc định': 30000 // Các sân nhỏ không có tên trong danh sách sẽ lấy số này
+    'Mặc định': 30000 // nếu không có 
 };
 
-// ==========================================
-// 4. GỌI API ĐỂ KÉO DỮ LIỆU (ĐỒNG BỘ THEO TỪNG GIẢI)
-// ==========================================
+// api thêm trận
 router.get('/api-fetch', async (req, res) => {
     try {
         var giaidauDaChon = req.query.giaidau;
@@ -133,9 +121,7 @@ router.get('/api-fetch', async (req, res) => {
             return res.redirect('/admin/themtran');
         }
 
-        // =========================
-        // 1. CHECK DB - XÁC ĐỊNH MAX VÒNG
-        // =========================
+        // kiểm tra vòng đấu hiện tại của giải đấu đã chọn
         var cacTran = await TranDau.find({ GiaiDau: giaidauDaChon }).exec();
         var maxVong = 0;
 
@@ -149,9 +135,7 @@ router.get('/api-fetch', async (req, res) => {
             }
         });
 
-        // =========================
-        // 2. GỌI API
-        // =========================
+        // api football
         var axios = require('axios');
 
         var configAPI = {
@@ -159,14 +143,14 @@ router.get('/api-fetch', async (req, res) => {
             url: 'https://v3.football.api-sports.io/fixtures',
             params: {
                 league: leagueId,
-                season: 2024 // free plan
+                season: 2024 
             },
             headers: {
                 'x-apisports-key': 'bcf3507c3e8b246a031d44e67a66e000'
             }
         };
 
-        // 👉 Nếu đã có dữ liệu → chỉ lấy vòng tiếp theo
+        // nếu có => lấy vòng tiếp theo
         if (maxVong > 0) {
             configAPI.params.round = `Regular Season - ${maxVong + 1}`;
         }
@@ -179,9 +163,7 @@ router.get('/api-fetch', async (req, res) => {
             return res.redirect('/admin/themtran');
         }
 
-        // =========================
-        // 3. FILTER NẾU DB TRỐNG
-        // =========================
+        // nếu trống => lấy đến vòng hiện tại của giải
         if (maxVong === 0) {
             var mapVongHienTai = {
                 'Ngoại hạng Anh': 33,
@@ -204,9 +186,7 @@ router.get('/api-fetch', async (req, res) => {
             });
         }
 
-        // =========================
-        // 4. XỬ LÝ DATA (+1 NĂM)
-        // =========================
+        // fake data
         var mapSucChua = {
             'Old Trafford': 74310,
             'Emirates Stadium': 60704,
@@ -227,11 +207,11 @@ router.get('/api-fetch', async (req, res) => {
         for (let match of danhSachTranApi) {
             var thoiGianGoc = new Date(match.fixture.date);
 
-            // 👉 +1 năm
+            // +1 năm
             var fakeDate = new Date(thoiGianGoc);
             fakeDate.setFullYear(fakeDate.getFullYear() + 1);
 
-            // 👉 timezone VN
+            // timezone VN
             fakeDate.setHours(fakeDate.getHours() + 7);
 
             var trangThaiHienTai = fakeDate > now ? 'Sắp diễn ra' : 'Đã kết thúc';
@@ -254,7 +234,7 @@ router.get('/api-fetch', async (req, res) => {
                 HangVe: []
             };
 
-            // 👉 chống trùng
+            // chống trùng
             var exists = await TranDau.findOne({
                 DoiNha: data.DoiNha,
                 DoiKhach: data.DoiKhach,
@@ -266,9 +246,7 @@ router.get('/api-fetch', async (req, res) => {
             }
         }
 
-        // =========================
-        // 5. INSERT
-        // =========================
+        // insert vào database
         if (duLieuInsert.length > 0) {
             await TranDau.insertMany(duLieuInsert);
         }
@@ -281,9 +259,7 @@ router.get('/api-fetch', async (req, res) => {
         res.redirect('/admin/themtran');
     }
 });
-// ==========================================
-// 5. QUẢN LÝ TẠO VÉ (GIAO DIỆN CHỌN GIẢI ĐẤU)
-// ==========================================
+// tạo vé
 router.get('/taove', async (req, res) => {
     try {
         var giaidauDaChon = req.query.giaidau;
@@ -306,7 +282,7 @@ router.get('/taove', async (req, res) => {
     }
 });
 
-// Chế độ 1: Tạo vé cho 1 trận cụ thể
+// 1 trận cụ thể
 router.get('/taovenhanh/:id', async (req, res) => {
     try {
         var idTran = req.params.id;
@@ -340,13 +316,12 @@ router.get('/taovenhanh/:id', async (req, res) => {
     }
 });
 
-// Chế độ 2: Tạo vé hàng loạt (Chỉ tạo cho giải đấu đang được chọn)
+// tạo hàng loạt
 router.get('/taove-hangloat', async (req, res) => {
     try {
         var giaidauDaChon = req.query.giaidau;
         if (!giaidauDaChon) return res.redirect('/admin/taove');
 
-        // Bổ sung điều kiện chỉ tìm các trận trong giải đấu đang chọn
         var cacTranChuaCoVe = await TranDau.find({ GiaiDau: giaidauDaChon, HangVe: { $size: 0 }, TrangThai: 'Sắp diễn ra' }).exec();
 
         for (let tranDau of cacTranChuaCoVe) {
@@ -375,8 +350,6 @@ router.get('/taove-hangloat', async (req, res) => {
 // quản lý đơn hàng (get)
 router.get('/donhang', async (req, res) => {
     try {
-        // Lấy tất cả đơn hàng, sắp xếp mới nhất lên đầu
-        // populate để lấy thông tin chi tiết từ bảng NguoiDung và TranDau
         var danhSachDonHang = await DonHang.find()
             .populate('NguoiDung')
             .populate('TranDau')
@@ -395,8 +368,6 @@ router.get('/donhang', async (req, res) => {
 // quản lý người dùng (get)
 router.get('/nguoidung', async (req, res) => {
     try {
-        // THAY ĐỔI Ở ĐÂY: Thêm điều kiện { QuyenHan: { $ne: 'admin' } }
-        // $ne nghĩa là "Not Equal" (Không bằng). Nó sẽ lấy tất cả user TRỪ admin.
         var danhSachNguoiDung = await NguoiDung.find({ QuyenHan: { $ne: 'admin' } }).sort({ _id: -1 });
 
         res.render('../admin/nguoidung', {
@@ -423,39 +394,31 @@ router.get('/nguoidung/toggle-status/:id', async (req, res) => {
     }
 });
 
-// ==========================================
-// 8. QUÉT VÉ TẠI CỔNG (Dành cho Admin/Nhân viên)
-// ==========================================
-
-// Hiển thị giao diện Camera quét mã
+// quét qr
 router.get('/quetve', async (req, res) => {
     res.render('../admin/quetve', { title: 'Soát Vé Cổng' });
 });
 
-// API Nhận mã từ Camera và xử lý
+// xử lý mã qr
 router.post('/quetve/xuly', async (req, res) => {
     try {
         var maCode = req.body.maCode;
 
-        // Tìm đơn hàng có chứa mã vé này
         var donHang = await DonHang.findOne({ "DanhSachMaVe.MaCode": maCode })
             .populate('TranDau')
             .populate('NguoiDung');
-
-        // 1. NẾU MÃ VÉ LÀ GIẢ (Không có trong Database)
+        // giả
         if (!donHang) {
             return res.json({ success: false, message: 'Vé giả hoặc không tồn tại trên hệ thống!' });
         }
 
-        // 2. Lôi chính xác tấm vé đó ra khỏi mảng
+        // lấy thông tin vé từ đơn hàng
         var ve = donHang.DanhSachMaVe.find(v => v.MaCode === maCode);
 
-        // 3. KIỂM TRA TRẠNG THÁI VÉ
+        // kiêm tra trạng thái vé
         if (ve.TrangThai === 'Chưa sử dụng') {
-            // Đổi trạng thái thành Đã sử dụng
-            ve.TrangThai = 'Đã sử dụng';
             
-            // Cú pháp bắt buộc của Mongoose khi sửa dữ liệu bên trong Mảng
+            ve.TrangThai = 'Đã sử dụng';
             donHang.markModified('DanhSachMaVe'); 
             await donHang.save();
 

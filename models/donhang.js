@@ -8,7 +8,7 @@ var donHangSchema = new mongoose.Schema({
     TongTien: { type: Number, required: true },
     DanhSachMaVe: [{
         MaCode: { type: String, required: true },
-        TrangThai: { type: String, default: 'Chưa sử dụng' } // Mặc định khi mua xong là chưa dùng
+        TrangThai: { type: String, default: 'Chưa sử dụng' } 
     }],
     NgayMua: { type: Date, default: Date.now }
 });

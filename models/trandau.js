@@ -7,17 +7,17 @@ var tranDauSchema = new mongoose.Schema({
     LogoKhach: { type: String },
     SanVanDong: { type: String, required: true },
     SucChua: { type: Number, default: 0 },
-    GiaiDau: { type: String, required: true }, // Ví dụ: Ngoại hạng Anh, La Liga...
-    VongDau: { type: String },                 // Ví dụ: Vòng 12, Vòng 13...
-    ThoiGian: { type: Date, required: true },  // Dùng để so sánh thời gian thực khóa vé
+    GiaiDau: { type: String, required: true }, 
+    VongDau: { type: String },                 
+    ThoiGian: { type: Date, required: true },  
     HinhAnh: { type: String },
-    TrangThai: { type: String, default: 'Sắp diễn ra' }, // Sắp diễn ra, Đang đá, Đã kết thúc
-    Hot: { type: Boolean, default: false },              // true: Trận cầu tâm điểm
+    TrangThai: { type: String, default: 'Sắp diễn ra' }, 
+    Hot: { type: Boolean, default: false },            
     HangVe: [{
-        TenHang: { type: String, required: true },       // VIP, Khán đài A, Khán đài B...
+        TenHang: { type: String, required: true },       
         GiaTien: { type: Number, required: true },
-        SoLuong: { type: Number, required: true },       // Tổng vé mở bán
-        SoLuongCon: { type: Number, required: true }     // Số vé còn lại để trừ dần
+        SoLuong: { type: Number, required: true },       
+        SoLuongCon: { type: Number, required: true }     
     }]
 });
 
