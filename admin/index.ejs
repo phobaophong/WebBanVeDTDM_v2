@@ -1,65 +1,264 @@
 <%- include('header') %>
 
-<div class="row g-4 mb-4">
-    <div class="col-md-3">
-        <div class="card bg-primary text-white shadow-sm border-0 h-100 rounded-3">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="text-uppercase text-white-50 fw-bold small">Tổng Doanh Thu</h6>
-                    <h3 class="mb-0 fw-bold"><%= tongDoanhThu.toLocaleString('vi-VN') %><small class="fs-6">đ</small></h3>
-                </div>
-                <i class="bi bi-cash-coin fs-1 opacity-50"></i>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3">
-        <div class="card bg-success text-white shadow-sm border-0 h-100 rounded-3">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="text-uppercase text-white-50 fw-bold small">Số Vé Đã Bán</h6>
-                    <h3 class="mb-0 fw-bold"><%= tongVe %> <small class="fs-6">vé</small></h3>
-                </div>
-                <i class="bi bi-ticket-detailed fs-1 opacity-50"></i>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3">
-        <div class="card bg-warning text-dark shadow-sm border-0 h-100 rounded-3">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="text-uppercase text-black-50 fw-bold small">Trận Đấu</h6>
-                    <h3 class="mb-0 fw-bold"><%= tongTran %> <small class="fs-6">trận</small></h3>
-                </div>
-                <i class="bi bi-trophy fs-1 opacity-50"></i>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-3">
-        <div class="card bg-danger text-white shadow-sm border-0 h-100 rounded-3">
-            <div class="card-body d-flex justify-content-between align-items-center">
-                <div>
-                    <h6 class="text-uppercase text-white-50 fw-bold small">Khách Hàng</h6>
-                    <h3 class="mb-0 fw-bold"><%= tongNguoiDung %> <small class="fs-6">user</small></h3>
-                </div>
-                <i class="bi bi-people fs-1 opacity-50"></i>
-            </div>
-        </div>
-    </div>
-</div>
+    <style>
+        /* 1. Nâng cấp các thẻ Thống kê với Gradient */
+        .stat-card {
+            border: none;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            color: white;
+            overflow: hidden;
+            position: relative;
+        }
 
-<div class="card shadow-sm border-0 rounded-3">
-    <div class="card-header bg-white py-3 fw-bold text-dark border-bottom">
-        <i class="bi bi-activity text-primary me-2"></i> HOẠT ĐỘNG GẦN ĐÂY
-    </div>
-    <div class="card-body text-center py-5 bg-light">
-        <i class="bi bi-inboxes fs-1 text-muted mb-3 d-block"></i>
-        <h5 class="text-muted fw-bold">Chưa có giao dịch nào phát sinh</h5>
-        <p class="small text-secondary">Hãy vào mục "Quản lý Trận đấu" để thêm dữ liệu và bắt đầu bán vé.</p>
-        <a href="/admin/trandau" class="btn btn-primary btn-sm mt-2 px-4 rounded-pill">Chuyển đến Trận Đấu</a>
-    </div>
-</div>
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
 
-<%- include('footer') %>
+        .stat-card .card-body {
+            z-index: 2;
+            position: relative;
+        }
+
+        .stat-card i {
+            position: absolute;
+            right: -10px;
+            bottom: -10px;
+            font-size: 5rem;
+            opacity: 0.2;
+            z-index: 1;
+        }
+
+        .bg-grad-blue {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        }
+
+        .bg-grad-green {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .bg-grad-orange {
+            background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%);
+        }
+
+        .bg-grad-purple {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        }
+
+        /* 2. Thao tác nhanh */
+        .quick-action-btn {
+            transition: all 0.2s;
+            border: 1px solid #eee;
+            background: white;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .quick-action-btn:hover {
+            background-color: #f8f9fa;
+            border-color: #0d6efd;
+            color: #0d6efd;
+        }
+
+        /* 3. Biểu đồ */
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card stat-card bg-grad-blue h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase opacity-75 fw-bold small">Tổng Doanh Thu</h6>
+                        <h3 class="mb-0 fw-bold">
+                            <%= tongDoanhThu.toLocaleString('vi-VN') %><small class="fs-6">đ</small>
+                        </h3>
+                    </div>
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-grad-green h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase opacity-75 fw-bold small">Số Vé Đã Bán</h6>
+                        <h3 class="mb-0 fw-bold">
+                            <%= tongVe %> <small class="fs-6">vé</small>
+                        </h3>
+                    </div>
+                    <i class="bi bi-ticket-perforated"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-grad-orange h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase opacity-75 fw-bold small">Tổng Trận Đấu</h6>
+                        <h3 class="mb-0 fw-bold">
+                            <%= tongTran %> <small class="fs-6">trận</small>
+                        </h3>
+                    </div>
+                    <i class="bi bi-trophy"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-grad-purple h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-uppercase opacity-75 fw-bold small">Khách Hàng</h6>
+                        <h3 class="mb-0 fw-bold">
+                            <%= tongNguoiDung %> <small class="fs-6">người</small>
+                        </h3>
+                    </div>
+                    <i class="bi bi-people"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-lg-8">
+            <div class="chart-container h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0 text-dark">Phân tích Doanh thu (7 ngày gần nhất)</h5>
+                    <button class="btn btn-sm btn-outline-primary rounded-pill px-3">Tải báo cáo</button>
+                </div>
+                <canvas id="revenueChart" style="max-height: 300px;"></canvas>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="chart-container h-100">
+                <h5 class="fw-bold mb-3 text-dark">Thao tác nhanh</h5>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <a href="/admin/quetve" class="btn quick-action-btn w-100 py-3 rounded-3 text-center d-block">
+                            <i class="bi bi-qr-code-scan fs-3 mb-2 d-block"></i>
+                            <span class="small fw-bold">Soát Vé</span>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="/admin/themtran" class="btn quick-action-btn w-100 py-3 rounded-3 text-center d-block">
+                            <i class="bi bi-plus-circle fs-3 mb-2 d-block"></i>
+                            <span class="small fw-bold">Thêm Trận</span>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="/admin/nguoidung"
+                            class="btn quick-action-btn w-100 py-3 rounded-3 text-center d-block">
+                            <i class="bi bi-person-gear fs-3 mb-2 d-block"></i>
+                            <span class="small fw-bold">Người Dùng</span>
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="/admin/donhang" class="btn quick-action-btn w-100 py-3 rounded-3 text-center d-block">
+                            <i class="bi bi-file-earmark-bar-graph fs-3 mb-2 d-block"></i>
+                            <span class="small fw-bold">Đơn Hàng</span>
+                        </a>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <h6 class="fw-bold mb-3 small text-muted text-uppercase">Tỉ lệ vé theo Giải đấu</h6>
+                <canvas id="leagueChart" style="max-height: 180px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="chart-container">
+                <h5 class="fw-bold mb-4 text-dark"><i class="bi bi-fire text-danger me-2"></i>Điểm nóng Trận đấu sắp tới
+                </h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Trận đấu</th>
+                                <th>Thời gian</th>
+                                <th>Giải đấu</th>
+                                <th class="text-center">Vé còn lại</th>
+                                <th class="text-end">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="fw-bold">Real Madrid vs Barcelona</div>
+                                    <span class="badge bg-danger-subtle text-danger small">Trận cầu đinh</span>
+                                </td>
+                                <td><i class="bi bi-calendar3 me-2"></i>20/04/2026 - 02:00</td>
+                                <td>La Liga</td>
+                                <td class="text-center">
+                                    <div class="progress" style="height: 10px; width: 100px; margin: 0 auto;">
+                                        <div class="progress-bar bg-danger" style="width: 85%"></div>
+                                    </div>
+                                    <small class="text-muted">Chỉ còn 15%</small>
+                                </td>
+                                <td class="text-end">
+                                    <a href="/admin/taove" class="btn btn-sm btn-primary rounded-pill px-3">Quản lý
+                                        vé</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // 1. Biểu đồ Doanh thu (Mẫu dữ liệu ảo)
+        const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctxRevenue, {
+            type: 'line',
+            data: {
+                labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'],
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: [5000000, 8000000, 4000000, 12000000, 15000000, 25000000, 30000000],
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    borderColor: '#0d6efd',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        // 2. Biểu đồ Tỉ lệ Giải đấu
+        const ctxLeague = document.getElementById('leagueChart').getContext('2d');
+        new Chart(ctxLeague, {
+            type: 'doughnut',
+            data: {
+                labels: ['EPL', 'La Liga', 'Serie A', 'Khác'],
+                datasets: [{
+                    data: [45, 25, 20, 10],
+                    backgroundColor: ['#1e3c72', '#ff5e62', '#11998e', '#6a11cb']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { position: 'right' } }
+            }
+        });
+    </script>
+
+    <%- include('footer') %>

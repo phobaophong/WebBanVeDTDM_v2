@@ -64,7 +64,7 @@
         <div class="row align-items-center position-relative" style="z-index: 2;">
             <div class="col-md-8">
                 <span class="badge bg-warning text-dark mb-2 px-3 py-2 rounded-pill fw-bold"><i
-                        class="bi bi-star-fill"></i> Mùa Giải 2024-2025</span>
+                        class="bi bi-star-fill"></i> Mùa Giải Mới</span>
                 <h1 class="fw-bold display-5 mb-3">Cháy Hết Mình Cùng Đam Mê!</h1>
                 <p class="lead mb-0 opacity-75">Hệ thống đặt vé bóng đá hàng đầu. Đảm bảo uy tín, an toàn và nhanh
                     chóng. Sở hữu ngay tấm vé đến các sân vận động cuồng nhiệt nhất Châu Âu.</p>
@@ -76,6 +76,7 @@
     </div>
 
     <div class="row g-4">
+        <!-- phần bên trái -->
         <div class="col-lg-3">
             <div class="card shadow-sm border-0 rounded-4 mb-4">
                 <div class="card-header bg-dark text-white fw-bold py-3 rounded-top-4 border-0">
@@ -102,16 +103,19 @@
                                     <small class="text-muted fst-italic">Đang cập nhật...</small>
                                     <% } else { %>
                                         <% danhSachDoiBong.forEach(doi=> { %>
-                                            <div class="form-check mb-1">
+                                            <div class="form-check mb-2" style="display: flex; align-items: center;">
                                                 <input class="form-check-input border-secondary" type="checkbox"
-                                                    name="doi" value="<%= doi %>" id="doi_<%= doi %>"
-                                                    <%=doiDaChon.includes(doi) ? 'checked' : '' %>>
-                                                <label class="form-check-label small" for="doi_<%= doi %>">
-                                                    <%= doi %>
+                                                    name="doi" value="<%= doi.TenDoi %>" id="doi_<%= doi.TenDoi %>"
+                                                    <%=doiDaChon.includes(doi.TenDoi) ? 'checked' : '' %>
+                                                    style="margin-top: 0; margin-right: 10px; cursor: pointer;">
+                                                    
+                                                <label class="form-check-label small" for="doi_<%= doi.TenDoi %>" style="display: flex; align-items: center; cursor: pointer; width: 100%;">
+                                                    <img src="<%= doi.Logo %>" alt="<%= doi.TenDoi %>" style="width: 24px; height: 24px; object-fit: contain; margin-right: 8px;">
+                                                    <%= doi.TenDoi %>
                                                 </label>
                                             </div>
-                                            <% }) %>
-                                                <% } %>
+                                    <% }) %>
+                                <% } %>
                             </div>
                         </div>
 
@@ -123,7 +127,7 @@
                     </form>
                 </div>
             </div>
-
+            <!-- thông tin bóng đá -->
             <div class="card shadow-sm border-0 rounded-4 mb-4">
                 <div class="card-header bg-white fw-bold py-3 border-bottom text-primary">
                     <i class="bi bi-newspaper me-2"></i> TIN TỨC NỔI BẬT
@@ -145,11 +149,11 @@
                 <i class="bi bi-headset position-absolute opacity-25"
                     style="font-size: 6rem; right: -20px; bottom: -20px;"></i>
                 <h6 class="fw-bold position-relative z-1 mb-3 text-uppercase">Hỗ trợ khách hàng</h6>
-                <h4 class="fw-bold position-relative z-1 mb-1 text-warning">0866.675.978</h4>
-                <small class="position-relative z-1 opacity-75">support@ticketseuro.vn</small>
+                <h4 class="fw-bold position-relative z-1 mb-1 text-warning">0945.082.965</h4>
+                <small class="position-relative z-1 opacity-75">support@vebongdaonline.vn</small>
             </div>
         </div>
-
+        <!-- phần bên phải -->
         <div class="col-lg-9">
             <div class="d-flex justify-content-between align-items-end mb-3 border-bottom pb-2">
                 <h4 class="mb-0 fw-bold text-dark text-uppercase"><i class="bi bi-calendar-event text-primary me-2"></i>

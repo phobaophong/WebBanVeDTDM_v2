@@ -72,6 +72,7 @@
                                                 <th>VS</th>
                                                 <th>Đội Khách</th>
                                                 <th>Trạng thái</th>
+                                                <th class="text-center">Nổi bật</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -95,6 +96,20 @@
                                                             class="badge <%= td.TrangThai === 'Đã kết thúc' ? 'bg-secondary' : 'bg-success' %>">
                                                             <%= td.TrangThai %>
                                                         </span>
+                                                    </td>
+
+                                                    <td class="text-center">
+                                                        <form action="/admin/trandau/toggle-hot/<%= td._id %>?giaidau=<%= giaidauDaChon %>" method="POST">
+                                                            <button type="submit"
+                                                                class="btn btn-sm <%= td.Hot ? 'btn-danger' : 'btn-outline-secondary' %> rounded-pill shadow-sm"
+                                                                style="min-width: 100px;">
+                                                                <% if(td.Hot) { %>
+                                                                    <i class="bi bi-fire me-1"></i> Nổi bật
+                                                                    <% } else { %>
+                                                                        <i class="bi bi- megaphone me-1"></i> Thường
+                                                                        <% } %>
+                                                            </button>
+                                                        </form>
                                                     </td>
                                                 </tr>
                                                 <% }) %>

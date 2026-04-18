@@ -21,7 +21,10 @@ const storage = multer.diskStorage({
     }
 });
 const upload = multer({ storage: storage });
-// GET: Trang chủ
+
+
+
+// trang chủ (get)
 router.get('/', async (req, res) => {
     try {
         // tìm trận đấu đang sắp diễn ra
@@ -51,10 +54,20 @@ router.get('/', async (req, res) => {
             dieuKienLayDoi.GiaiDau = req.query.giaidau; 
         }
 
-        var cacDoiNha = await TranDau.distinct('DoiNha', dieuKienLayDoi).exec();
-        var cacDoiKhach = await TranDau.distinct('DoiKhach', dieuKienLayDoi).exec();
+        var cacTranDau = await TranDau.find(dieuKienLayDoi).select('DoiNha LogoNha DoiKhach LogoKhach').exec();
+        var mapDoiBong = new Map();
 
-        var danhSachDoiBong = [...new Set([...cacDoiNha, ...cacDoiKhach])].sort();
+        cacTranDau.forEach(td => {
+            if (td.DoiNha && !mapDoiBong.has(td.DoiNha)) {
+                mapDoiBong.set(td.DoiNha, td.LogoNha || 'https://cdn-icons-png.flaticon.com/512/534/534125.png');
+            }
+            if (td.DoiKhach && !mapDoiBong.has(td.DoiKhach)) {
+                mapDoiBong.set(td.DoiKhach, td.LogoKhach || 'https://cdn-icons-png.flaticon.com/512/534/534125.png');
+            }
+        });
+
+        var danhSachDoiBong = Array.from(mapDoiBong, ([TenDoi, Logo]) => ({ TenDoi, Logo }))
+                                   .sort((a, b) => a.TenDoi.localeCompare(b.TenDoi));
 
         var cacDoiDaChon = req.query.doi ? (Array.isArray(req.query.doi) ? req.query.doi : [req.query.doi]) : [];
 

@@ -259,6 +259,43 @@ router.get('/api-fetch', async (req, res) => {
         res.redirect('/admin/themtran');
     }
 });
+// thay đổi trạng thái nổi bật
+router.post('/trandau/toggle-hot/:id', async (req, res) => {
+    try {
+        // 1. TẠO ĐƯỜNG DẪN CHUYỂN HƯỚNG THÔNG MINH
+        // Nếu lúc gửi form có kèm tên giải đấu, ta sẽ nối nó vào link chuyển hướng
+        let linkChuyenHuong = '/admin/themtran';
+        if (req.query.giaidau) {
+            linkChuyenHuong += '?giaidau=' + req.query.giaidau;
+        }
+
+        const TranDau = require('../models/trandau');
+        const match = await TranDau.findById(req.params.id);
+
+        if (!match) {
+            req.session.error = "Không tìm thấy trận đấu!";
+            return res.redirect(linkChuyenHuong); // Dùng link thông minh
+        }
+
+        match.Hot = !match.Hot;
+        await match.save();
+
+        const statusText = match.Hot ? "Đã bật trạng thái Nổi bật!" : "Đã tắt trạng thái Nổi bật!";
+        req.session.success = statusText;
+        
+        req.session.save(() => {
+            res.redirect(linkChuyenHuong); // Dùng link thông minh
+        });
+
+    } catch (error) {
+        console.log(error);
+        req.session.error = "Có lỗi xảy ra khi cập nhật trạng thái!";
+        
+        let linkLoi = '/admin/themtran';
+        if (req.query.giaidau) linkLoi += '?giaidau=' + req.query.giaidau;
+        res.redirect(linkLoi);
+    }
+});
 // tạo vé
 router.get('/taove', async (req, res) => {
     try {
