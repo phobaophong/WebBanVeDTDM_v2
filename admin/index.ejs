@@ -1,0 +1,65 @@
+<%- include('header') %>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white shadow-sm border-0 h-100 rounded-3">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-uppercase text-white-50 fw-bold small">Tổng Doanh Thu</h6>
+                    <h3 class="mb-0 fw-bold"><%= tongDoanhThu.toLocaleString('vi-VN') %><small class="fs-6">đ</small></h3>
+                </div>
+                <i class="bi bi-cash-coin fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-success text-white shadow-sm border-0 h-100 rounded-3">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-uppercase text-white-50 fw-bold small">Số Vé Đã Bán</h6>
+                    <h3 class="mb-0 fw-bold"><%= tongVe %> <small class="fs-6">vé</small></h3>
+                </div>
+                <i class="bi bi-ticket-detailed fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-warning text-dark shadow-sm border-0 h-100 rounded-3">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-uppercase text-black-50 fw-bold small">Trận Đấu</h6>
+                    <h3 class="mb-0 fw-bold"><%= tongTran %> <small class="fs-6">trận</small></h3>
+                </div>
+                <i class="bi bi-trophy fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3">
+        <div class="card bg-danger text-white shadow-sm border-0 h-100 rounded-3">
+            <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                    <h6 class="text-uppercase text-white-50 fw-bold small">Khách Hàng</h6>
+                    <h3 class="mb-0 fw-bold"><%= tongNguoiDung %> <small class="fs-6">user</small></h3>
+                </div>
+                <i class="bi bi-people fs-1 opacity-50"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="card-header bg-white py-3 fw-bold text-dark border-bottom">
+        <i class="bi bi-activity text-primary me-2"></i> HOẠT ĐỘNG GẦN ĐÂY
+    </div>
+    <div class="card-body text-center py-5 bg-light">
+        <i class="bi bi-inboxes fs-1 text-muted mb-3 d-block"></i>
+        <h5 class="text-muted fw-bold">Chưa có giao dịch nào phát sinh</h5>
+        <p class="small text-secondary">Hãy vào mục "Quản lý Trận đấu" để thêm dữ liệu và bắt đầu bán vé.</p>
+        <a href="/admin/trandau" class="btn btn-primary btn-sm mt-2 px-4 rounded-pill">Chuyển đến Trận Đấu</a>
+    </div>
+</div>
+
+<%- include('footer') %>

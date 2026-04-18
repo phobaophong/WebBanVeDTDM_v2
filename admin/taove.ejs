@@ -1,0 +1,109 @@
+<%- include('header') %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold text-primary mb-0"><i class="bi bi-ticket-detailed me-2"></i>Quản lý Tạo Vé</h4>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-header bg-dark text-white fw-bold py-3">
+                <i class="bi bi-funnel-fill me-2"></i>1. Chọn Giải Đấu
+            </div>
+            <div class="card-body bg-light">
+                <form action="/admin/taove" method="GET">
+                    <label class="form-label fw-bold small text-secondary">Lọc danh sách trận đấu:</label>
+                    <select name="giaidau" class="form-select border-primary mb-3 shadow-sm" onchange="this.form.submit()">
+                        <option value="">-- Vui lòng chọn giải đấu --</option>
+                        <% danhSachGiaiDau.forEach(giai => { %>
+                            <option value="<%= giai %>" <%= giaidauDaChon === giai ? 'selected' : '' %>><%= giai %></option>
+                        <% }) %>
+                    </select>
+                </form>
+
+                <% if (giaidauDaChon) { %>
+                    <hr>
+                    <div class="alert alert-warning small p-2 text-center mb-3">
+                        Vé tự động sẽ được tạo = <strong>30%</strong> Sức chứa sân. (Gồm 5 hạng ghế).
+                    </div>
+                    <a href="/admin/taove-hangloat?giaidau=<%= giaidauDaChon %>" class="btn btn-success w-100 fw-bold shadow-sm py-2">
+                        <i class="bi bi-magic me-1"></i> TẠO VÉ HÀNG LOẠT CHO GIẢI NÀY
+                    </a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 rounded-3 h-100">
+            <div class="card-header bg-primary text-white fw-bold py-3 d-flex justify-content-between">
+                <span><i class="bi bi-list-task me-2"></i>2. Trạng thái phân bổ vé</span>
+                <% if (giaidauDaChon) { %>
+                    <span class="badge bg-light text-primary"><%= trandauDb.length %> Trận</span>
+                <% } %>
+            </div>
+            <div class="card-body bg-light p-0">
+                <% if (!giaidauDaChon) { %>
+                    <div class="text-center py-5 text-muted">
+                        <i class="bi bi-arrow-left-circle fs-1 mb-3 d-block opacity-50"></i>
+                        <h5>Vui lòng chọn giải đấu để tiếp tục</h5>
+                    </div>
+                <% } else if (trandauDb.length === 0) { %>
+                    <div class="text-center py-5 text-muted">
+                        <h5>Chưa có dữ liệu nào của giải <%= giaidauDaChon %></h5>
+                    </div>
+                <% } else { %>
+                    <div class="table-responsive" style="max-height: 600px; overflow-y: auto;">
+                        <table class="table table-hover table-striped mb-0 text-center align-middle">
+                            <thead class="table-dark sticky-top">
+                                <tr>
+                                    <th>Vòng</th>
+                                    <th>Trận đấu</th>
+                                    <th>Sân / Sức chứa</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% trandauDb.forEach(td => { %>
+                                    <tr>
+                                        <td><span class="badge bg-secondary"><%= td.VongDau %></span></td>
+                                        <td class="small">
+                                            <div class="fw-bold d-flex justify-content-center align-items-center">
+                                                <% if(td.LogoNha) { %> <img src="<%= td.LogoNha %>" height="16" class="me-1"> <% } %>
+                                                <%= td.DoiNha %> <span class="mx-1 text-muted">-</span> <%= td.DoiKhach %>
+                                                <% if(td.LogoKhach) { %> <img src="<%= td.LogoKhach %>" height="16" class="ms-1"> <% } %>
+                                            </div>
+                                            <div class="text-muted mt-1" style="font-size: 0.75rem;"><%= new Date(td.ThoiGian).toLocaleString('vi-VN') %></div>
+                                        </td>
+                                        <td class="small">
+                                            <div class="fw-bold"><%= td.SanVanDong %></div>
+                                            <span class="text-muted"><%= td.SucChua.toLocaleString('vi-VN') %> chỗ</span>
+                                        </td>
+                                        <td>
+                                            <% if (td.TrangThai !== 'Sắp diễn ra') { %>
+                                                <span class="badge bg-secondary opacity-50 shadow-sm"><i class="bi bi-lock-fill"></i> Đã khóa sổ</span>
+                                            <% } else if (td.HangVe.length === 0) { %>
+                                                <a href="/admin/taovenhanh/<%= td._id %>" class="btn btn-outline-warning btn-sm fw-bold shadow-sm" style="font-size: 0.8rem;">
+                                                    <i class="bi bi-gear-fill"></i> Mở bán
+                                                </a>
+                                            <% } else { %>
+                                                <% 
+                                                    var tongVe = 0; 
+                                                    td.HangVe.forEach(v => tongVe += v.SoLuong);
+                                                %>
+                                                <span class="badge bg-success shadow-sm">Đang mở bán</span>
+                                                <div class="text-secondary mt-1 fw-bold" style="font-size: 0.75rem;"><%= tongVe.toLocaleString('vi-VN') %> vé</div>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('footer') %>

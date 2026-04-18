@@ -1,0 +1,57 @@
+<%- include('header') %>
+
+<div class="container mt-4 mb-5" style="min-height: 60vh;">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-primary text-white py-3 border-0 rounded-top-4">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-person-badge me-2"></i>HỒ SƠ CÁ NHÂN</h5>
+                </div>
+                <div class="card-body p-4 bg-light rounded-bottom-4">
+                    
+                    <form action="/nguoidung/profile" method="POST" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-4 mb-md-0 border-end">
+                                <img src="<%= user.Avatar %>" alt="Avatar" class="rounded-circle img-thumbnail shadow-sm mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                                
+                                <div class="mb-3 text-start">
+                                    <label class="form-label small fw-bold text-muted">Thay đổi ảnh đại diện</label>
+                                    <input class="form-control form-control-sm border-primary" type="file" name="Avatar" accept="image/*">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-8 ps-md-4">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small text-secondary">Tên đăng nhập (Không thể đổi)</label>
+                                    <input type="text" class="form-control bg-light text-muted" value="<%= user.TenDangNhap %>" readonly>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small text-secondary">Email</label>
+                                    <input type="text" class="form-control bg-light text-muted" value="<%= user.Email || 'Chưa cập nhật' %>" readonly>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small text-secondary">Họ và tên <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control border-primary" name="HoVaTen" value="<%= user.HoVaTen %>" required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold small text-secondary">Số điện thoại liên hệ</label>
+                                    <input type="text" class="form-control border-primary" name="SoDienThoai" value="<%= user.SoDienThoai || '' %>" placeholder="Nhập số điện thoại...">
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm rounded-pill">
+                                    <i class="bi bi-floppy-fill me-2"></i>LƯU THAY ĐỔI
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('footer') %>

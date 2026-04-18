@@ -1,0 +1,120 @@
+<%- include('header') %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold text-primary mb-0"><i class="bi bi-receipt me-2"></i>Quản Lý Đơn Hàng</h4>
+    <span class="badge bg-primary fs-6"><%= donHang.length %> Đơn hàng</span>
+</div>
+
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="card-header bg-dark text-white fw-bold py-3">
+        <i class="bi bi-list-ul me-2"></i>Danh sách Giao dịch
+    </div>
+    <div class="card-body bg-light p-0">
+        <% if (donHang.length === 0) { %>
+            <div class="text-center py-5 text-muted">
+                <i class="bi bi-inboxes fs-1 mb-3 d-block opacity-50"></i>
+                <h5>Chưa có đơn hàng nào được bán ra.</h5>
+            </div>
+        <% } else { %>
+            <div class="table-responsive" style="max-height: 700px; overflow-y: auto;">
+                <table class="table table-hover table-striped mb-0 align-middle text-center">
+                    <thead class="table-dark sticky-top">
+                        <tr>
+                            <th>Mã ĐH</th>
+                            <th>Khách hàng</th>
+                            <th>Trận đấu</th>
+                            <th>Hạng / Số lượng</th>
+                            <th>Tổng tiền</th>
+                            <th>Thời gian mua</th>
+                            <th>Chi tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% donHang.forEach(dh => { %>
+                            <tr>
+                                <td class="fw-bold text-secondary">#<%= dh._id.toString().slice(-6).toUpperCase() %></td>
+                                
+                                <td class="text-start">
+                                    <% if (dh.NguoiDung) { %>
+                                        <div class="fw-bold text-primary"><i class="bi bi-person-circle me-1"></i><%= dh.NguoiDung.HoVaTen %></div>
+                                        <div class="small text-muted"><%= dh.NguoiDung.TenDangNhap %></div>
+                                    <% } else { %>
+                                        <span class="text-danger">Tài khoản đã xóa</span>
+                                    <% } %>
+                                </td>
+
+                                <td class="text-start small">
+                                    <% if (dh.TranDau) { %>
+                                        <div class="fw-bold"><%= dh.TranDau.DoiNha %> vs <%= dh.TranDau.DoiKhach %></div>
+                                        <div class="text-muted"><%= new Date(dh.TranDau.ThoiGian).toLocaleDateString('vi-VN') %></div>
+                                    <% } else { %>
+                                        <span class="text-danger">Trận đấu đã xóa</span>
+                                    <% } %>
+                                </td>
+
+                                <td>
+                                    <span class="badge bg-warning text-dark mb-1"><%= dh.TenHangVe %></span>
+                                    <div class="fw-bold text-secondary">x<%= dh.SoLuong %> vé</div>
+                                </td>
+
+                                <td class="fw-bold text-success">
+                                    <%= dh.TongTien.toLocaleString('vi-VN') %>đ
+                                </td>
+
+                                <td class="small text-muted">
+                                    <%= new Date(dh.NgayMua).toLocaleString('vi-VN') %>
+                                </td>
+
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary fw-bold" data-bs-toggle="modal" data-bs-target="#modal-<%= dh._id %>">
+                                        <i class="bi bi-eye"></i> Xem vé
+                                    </button>
+
+                                    <div class="modal fade" id="modal-<%= dh._id %>" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content border-0 shadow-lg">
+                                                <div class="modal-header bg-primary text-white">
+                                                    <h5 class="modal-title fw-bold">Chi tiết vé - Đơn #<%= dh._id.toString().slice(-6).toUpperCase() %></h5>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body text-start">
+                                                    <p class="mb-3 text-muted small"><i class="bi bi-info-circle me-1"></i>Danh sách các mã QR đã cấp cho khách hàng này:</p>
+                                                    
+                                                    <ul class="list-group">
+                                                        <% dh.DanhSachMaVe.forEach((ve, index) => { %>
+                                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                                <div>
+                                                                    <span class="text-muted me-2"><%= index + 1 %>.</span> 
+                                                                    <span class="fw-bold text-primary tracking-widest"><%= ve.MaCode %></span>
+                                                                </div>
+                                                                
+                                                                <% if(ve.TrangThai === 'Chưa sử dụng') { %>
+                                                                    <span class="badge bg-success rounded-pill">Chưa sử dụng</span>
+                                                                <% } else if(ve.TrangThai === 'Đã sử dụng') { %>
+                                                                    <span class="badge bg-danger rounded-pill">Đã sử dụng</span>
+                                                                <% } else if(ve.TrangThai === 'Quá hạn') { %>
+                                                                    <span class="badge bg-secondary rounded-pill">Quá hạn</span>
+                                                                <% } else { %>
+                                                                    <span class="badge bg-info rounded-pill"><%= ve.TrangThai %></span>
+                                                                <% } %>
+                                                            </li>
+                                                        <% }) %>
+                                                    </ul>
+                                                </div>
+                                                <div class="modal-footer bg-light">
+                                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Đóng</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('footer') %>

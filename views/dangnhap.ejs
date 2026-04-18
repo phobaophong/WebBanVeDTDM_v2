@@ -1,0 +1,46 @@
+<%- include('header') %>
+
+<div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-header bg-dark text-white text-center py-3 border-0 rounded-top-4">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-box-arrow-in-right me-2 text-warning"></i>ĐĂNG NHẬP</h5>
+            </div>
+            <div class="card-body p-4 bg-light rounded-bottom-4">
+                
+                <%- message %>
+
+                <form action="/auth/dangnhap" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-secondary">Tên đăng nhập</label>
+                        <input type="text" class="form-control border-dark" name="TenDangNhap" required placeholder="Nhập tên đăng nhập...">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-secondary">Mật khẩu</label>
+                        <input type="password" class="form-control border-dark" name="MatKhau" required placeholder="Nhập mật khẩu...">
+                    </div>
+
+                    <button type="submit" class="btn btn-dark w-100 fw-bold shadow-sm py-2 rounded-pill mb-3">ĐĂNG NHẬP BẰNG TÀI KHOẢN</button>
+                    
+                    <div class="d-flex align-items-center mb-3">
+                        <hr class="flex-grow-1">
+                        <span class="mx-2 small text-muted">Hoặc truy cập nhanh</span>
+                        <hr class="flex-grow-1">
+                    </div>
+                    
+                    <a href="/auth/google" class="btn btn-outline-danger w-100 fw-bold shadow-sm py-2 rounded-pill d-flex align-items-center justify-content-center">
+                        <i class="bi bi-google me-2 fs-5"></i> Đăng nhập bằng Google
+                    </a>
+                </form>
+                
+                <div class="text-center mt-4 small">
+                    <span class="text-muted">Chưa có tài khoản?</span> 
+                    <a href="/auth/dangky" class="text-decoration-none fw-bold text-danger">Đăng ký tại đây</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('footer') %>

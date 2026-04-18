@@ -1,0 +1,110 @@
+<%- include('header') %>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h4 class="fw-bold text-primary mb-0"><i class="bi bi-cloud-arrow-down-fill me-2"></i>Đồng bộ Trận đấu từ API
+        </h4>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-header bg-dark text-white fw-bold py-3">
+                    <i class="bi bi-funnel-fill me-2"></i>1. Chọn Giải Đấu
+                </div>
+                <div class="card-body bg-light">
+                    <form action="/admin/themtran" method="GET">
+                        <label class="form-label fw-bold small text-secondary">Hệ thống sẽ lọc các trận đã có trong
+                            DB:</label>
+                        <select name="giaidau" class="form-select border-primary mb-3 shadow-sm"
+                            onchange="this.form.submit()">
+                            <option value="">-- Vui lòng chọn giải đấu --</option>
+                            <% danhSachGiaiDau.forEach(giai=> { %>
+                                <option value="<%= giai %>" <%=giaidauDaChon===giai ? 'selected' : '' %>><%= giai %>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </form>
+
+                    <% if (giaidauDaChon) { %>
+                        <hr>
+                        <p class="small text-muted mb-2">Sau khi kiểm tra danh sách bên phải, bấm nút dưới đây để gọi
+                            API lấy vòng tiếp theo.</p>
+                        <a href="/admin/api-fetch?giaidau=<%= giaidauDaChon %>"
+                            class="btn btn-success w-100 fw-bold shadow-sm">
+                            <i class="bi bi-lightning-charge-fill me-1"></i> KẾT NỐI API & KÉO VÒNG MỚI
+                        </a>
+                        <% } %>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0 rounded-3 h-100">
+                <div class="card-header bg-primary text-white fw-bold py-3 d-flex justify-content-between">
+                    <span><i class="bi bi-database-fill me-2"></i>2. Dữ liệu hiện tại trong Database</span>
+                    <% if (giaidauDaChon) { %>
+                        <span class="badge bg-light text-primary">
+                            <%= trandauDb.length %> Trận
+                        </span>
+                        <% } %>
+                </div>
+                <div class="card-body bg-light p-0">
+                    <% if (!giaidauDaChon) { %>
+                        <div class="text-center py-5 text-muted">
+                            <i class="bi bi-arrow-left-circle fs-1 mb-3 d-block opacity-50"></i>
+                            <h5>Hãy chọn một giải đấu ở bên trái</h5>
+                        </div>
+                        <% } else if (trandauDb.length===0) { %>
+                            <div class="text-center py-5 text-muted">
+                                <i class="bi bi-inboxes fs-1 mb-3 d-block opacity-50"></i>
+                                <h5>Chưa có dữ liệu nào của giải <%= giaidauDaChon %>
+                                </h5>
+                                <p class="small">Bấm nút Kết nối API để kéo dữ liệu vòng 1 về nhé!</p>
+                            </div>
+                            <% } else { %>
+                                <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                                    <table class="table table-hover table-striped mb-0 text-center align-middle">
+                                        <thead class="table-dark sticky-top">
+                                            <tr>
+                                                <th>Vòng Đấu</th>
+                                                <th>Thời gian</th>
+                                                <th>Đội Nhà</th>
+                                                <th>VS</th>
+                                                <th>Đội Khách</th>
+                                                <th>Trạng thái</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% trandauDb.forEach(td=> { %>
+                                                <tr>
+                                                    <td><span class="badge bg-secondary">
+                                                            <%= td.VongDau || 'N/A' %>
+                                                        </span></td>
+                                                    <td class="small">
+                                                        <%= new Date(td.ThoiGian).toLocaleString('vi-VN') %>
+                                                    </td>
+                                                    <td class="fw-bold text-end w-25">
+                                                        <%= td.DoiNha %>
+                                                    </td>
+                                                    <td class="small text-muted">-</td>
+                                                    <td class="fw-bold text-start w-25">
+                                                        <%= td.DoiKhach %>
+                                                    </td>
+                                                    <td>
+                                                        <span
+                                                            class="badge <%= td.TrangThai === 'Đã kết thúc' ? 'bg-secondary' : 'bg-success' %>">
+                                                            <%= td.TrangThai %>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                                <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('footer') %>

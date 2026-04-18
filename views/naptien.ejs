@@ -1,0 +1,67 @@
+<%- include('header') %>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-primary text-white text-center py-3 rounded-top-4">
+                    <h4 class="mb-0 fw-bold"><i class="bi bi-cash-coin me-2"></i>NẠP TIỀN VÀO VÍ</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="text-center mb-4">
+                        <p class="text-muted mb-1">Số dư hiện tại</p>
+                        <h3 class="text-success fw-bold"><%= user.SoDu.toLocaleString('vi-VN') %>đ</h3>
+                    </div>
+
+                    <form action="/naptien/xuly" method="POST" id="formNapTien">
+                        <label class="form-label fw-bold">Chọn số tiền nạp nhanh:</label>
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <button type="button" class="btn btn-outline-primary w-100 py-2" onclick="setAmount(50000)">50.000đ</button>
+                            </div>
+                            <div class="col-6">
+                                <button type="button" class="btn btn-outline-primary w-100 py-2" onclick="setAmount(100000)">100.000đ</button>
+                            </div>
+                            <div class="col-6">
+                                <button type="button" class="btn btn-outline-primary w-100 py-2" onclick="setAmount(500000)">500.000đ</button>
+                            </div>
+                            <div class="col-6">
+                                <button type="button" class="btn btn-outline-primary w-100 py-2" onclick="setAmount(1000000)">1.000.000đ</button>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="soTien" class="form-label fw-bold">Hoặc nhập số tiền khác (VNĐ):</label>
+                            <input type="number" name="soTien" id="soTien" class="form-control form-control-lg border-primary" placeholder="Ví dụ: 200000" required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Phương thức thanh toán:</label>
+                            <select class="form-select border-primary">
+                                <option>Ví điện tử MoMo (Mô phỏng)</option>
+                                <option>Thẻ ATM Nội địa (Mô phỏng)</option>
+                                <option>Thẻ quốc tế Visa/Master (Mô phỏng)</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold rounded-pill shadow">
+                            XÁC NHẬN NẠP TIỀN
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="text-center mt-3">
+                <a href="/" class="text-decoration-none text-muted"><i class="bi bi-arrow-left"></i> Quay lại trang chủ</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setAmount(val) {
+        document.getElementById('soTien').value = val;
+    }
+</script>
+
+<%- include('footer') %>

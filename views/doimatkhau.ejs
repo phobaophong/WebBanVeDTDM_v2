@@ -1,0 +1,41 @@
+<%- include('header') %>
+
+<div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-header bg-warning text-dark text-center py-3 border-0 rounded-top-4">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-shield-lock-fill me-2"></i>ĐỔI MẬT KHẨU</h5>
+            </div>
+            <div class="card-body p-4 bg-light rounded-bottom-4">
+                <form action="/auth/doimatkhau" method="POST">
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-secondary">Mật khẩu hiện tại <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control border-warning" name="MatKhauCu" required placeholder="Nhập mật khẩu cũ...">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-secondary">Mật khẩu mới <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control border-warning" name="MatKhauMoi" required placeholder="Nhập mật khẩu mới...">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-secondary">Xác nhận mật khẩu mới <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control border-warning" name="XacNhanMatKhau" required placeholder="Nhập lại mật khẩu mới...">
+                    </div>
+
+                    <button type="submit" class="btn btn-warning w-100 fw-bold shadow-sm py-2 rounded-pill text-dark">
+                        <i class="bi bi-save-fill me-1"></i> LƯU MẬT KHẨU MỚI
+                    </button>
+                    
+                </form>
+                
+                <div class="text-center mt-3">
+                    <a href="/" class="text-decoration-none text-muted small"><i class="bi bi-arrow-left"></i> Quay lại trang chủ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('footer') %>

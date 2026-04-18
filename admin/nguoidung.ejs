@@ -1,0 +1,84 @@
+<%- include('header') %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold text-primary mb-0">
+        <i class="bi bi-people-fill me-2"></i>QUẢN LÝ TÀI KHOẢN
+    </h4>
+    <div class="badge bg-primary px-3 py-2 fs-6">Tổng cộng: <%= danhSachNguoiDung.length %> thành viên</div>
+</div>
+
+<div class="card shadow-sm border-0 rounded-3">
+    <div class="card-header bg-dark text-white py-3">
+        <i class="bi bi-table me-2"></i>Danh sách người dùng hệ thống
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 text-center">
+                <thead class="table-light">
+                    <tr>
+                        <th width="5%">STT</th>
+                        <th class="text-start">Thông tin tài khoản</th>
+                        <th>Số dư ví</th>
+                        <th>Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th width="20%">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% danhSachNguoiDung.forEach((user, index) => { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td class="text-start">
+                                <div class="fw-bold text-dark"><%= user.HoVaTen %></div>
+                                <div class="small text-muted">User: <span class="text-primary">@<%= user.TenDangNhap %></span></div>
+                                <div class="small text-muted">Email: <%= user.Email || 'N/A' %></div>
+                            </td>
+                            <td class="fw-bold text-success">
+                                <%= user.SoDu ? user.SoDu.toLocaleString('vi-VN') : 0 %>đ
+                            </td>
+                            <td>
+                                <% if (user.QuyenHan === 'admin') { %>
+                                    <span class="badge bg-danger">Quản trị viên</span>
+                                <% } else { %>
+                                    <span class="badge bg-info text-dark">Khách hàng</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (user.TrangThai === true) { %>
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle-fill me-1"></i>Đang hoạt động
+                                    </span>
+                                <% } else { %>
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-lock-fill me-1"></i>Đã bị khóa
+                                    </span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (user.QuyenHan !== 'admin') { %>
+                                    <% if (user.TrangThai === true) { %>
+                                        <a href="/admin/nguoidung/toggle-status/<%= user._id %>" 
+                                           class="btn btn-sm btn-outline-danger px-3 fw-bold"
+                                           onclick="return confirm('Bạn có chắc chắn muốn KHÓA tài khoản này?')">
+                                            <i class="bi bi-lock"></i> Khóa lại
+                                        </a>
+                                    <% } else { %>
+                                        <a href="/admin/nguoidung/toggle-status/<%= user._id %>" 
+                                           class="btn btn-sm btn-success px-3 fw-bold"
+                                           onclick="return confirm('Bạn có chắc chắn muốn MỞ KHÓA tài khoản này?')">
+                                            <i class="bi bi-unlock"></i> Mở khóa
+                                        </a>
+                                    <% } %>
+                                <% } else { %>
+                                    <span class="text-muted small fst-italic">Hệ thống</span>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<%- include('footer') %>

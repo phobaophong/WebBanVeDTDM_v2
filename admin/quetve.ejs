@@ -1,0 +1,104 @@
+<%- include('header') %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h4 class="fw-bold text-primary mb-0"><i class="bi bi-upc-scan me-2"></i>SOÁT VÉ ĐIỆN TỬ</h4>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-0 rounded-3 h-100">
+            <div class="card-header bg-dark text-white fw-bold py-3 text-center">
+                <i class="bi bi-camera-video-fill me-2"></i>MÀN HÌNH QUÉT MÃ
+            </div>
+            <div class="card-body bg-light text-center p-2">
+                <div id="reader" style="width: 100%; border-radius: 10px; overflow: hidden;"></div>
+                
+                <p class="text-muted small mt-3 mb-0"><i class="bi bi-info-circle"></i> Đưa mã QR của khách hàng vào giữa khung hình.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-0 rounded-3 h-100">
+            <div class="card-header bg-primary text-white fw-bold py-3 text-center">
+                <i class="bi bi-shield-check me-2"></i>KẾT QUẢ KIỂM TRA
+            </div>
+            <div class="card-body d-flex flex-column justify-content-center align-items-center bg-light" id="khung-ket-qua">
+                <i class="bi bi-qr-code fs-1 text-secondary opacity-50 mb-3"></i>
+                <h5 class="text-muted">Đang chờ quét vé...</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<script>
+    let isScanning = false;
+
+    async function kiemTraVe(maCode) {
+        if (isScanning) return;
+        isScanning = true;
+
+        const resultBox = document.getElementById('khung-ket-qua');
+        resultBox.innerHTML = '<div class="spinner-border text-primary" role="status"></div><h5 class="mt-3">Đang kiểm tra dữ liệu...</h5>';
+
+        try {
+            const response = await fetch('/admin/quetve/xuly', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ maCode: maCode })
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                // VÉ HỢP LỆ (Màu xanh)
+                resultBox.className = "card-body d-flex flex-column justify-content-center bg-success text-white p-4";
+                resultBox.innerHTML = `
+                    <div class="text-center mb-3"><i class="bi bi-check-circle-fill" style="font-size: 4rem;"></i></div>
+                    <h3 class="fw-bold text-center mb-4">${data.message}</h3>
+                    <div class="border-top border-light pt-3 w-100 text-start">
+                        <p class="mb-1"><i class="bi bi-person-fill me-2"></i>Khách: <b>${data.khachHang}</b></p>
+                        <p class="mb-1"><i class="bi bi-trophy-fill me-2"></i>Trận: <b>${data.tranDau}</b></p>
+                        <p class="mb-1"><i class="bi bi-ticket-fill me-2"></i>Loại vé: <b>${data.loaiVe}</b></p>
+                        <p class="mb-0 fs-5 mt-3 text-center border border-light p-2 rounded tracking-widest bg-dark text-warning">${maCode}</p>
+                    </div>
+                `;
+            } else {
+                // VÉ LỖI / ĐÃ DÙNG (Màu đỏ)
+                resultBox.className = "card-body d-flex flex-column justify-content-center align-items-center bg-danger text-white p-4";
+                resultBox.innerHTML = `
+                    <i class="bi bi-x-octagon-fill mb-3" style="font-size: 4rem;"></i>
+                    <h4 class="fw-bold text-center">${data.message}</h4>
+                    <p class="fs-5 mt-3 border border-light p-2 rounded tracking-widest bg-dark text-white">${maCode}</p>
+                `;
+            }
+
+        } catch (error) {
+            console.log(error);
+            resultBox.innerHTML = '<h5 class="text-danger">Lỗi kết nối máy chủ!</h5>';
+        }
+
+        // Tạm dừng 3 giây trước khi cho phép quét vé tiếp theo
+        setTimeout(() => {
+            isScanning = false;
+            resultBox.className = "card-body d-flex flex-column justify-content-center align-items-center bg-light";
+            resultBox.innerHTML = '<i class="bi bi-qr-code fs-1 text-secondary opacity-50 mb-3"></i><h5 class="text-muted">Đang chờ quét vé tiếp theo...</h5>';
+        }, 3000);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const html5QrCode = new Html5Qrcode("reader");
+        const qrCodeSuccessCallback = (decodedText, decodedResult) => {
+            kiemTraVe(decodedText);
+        };
+        const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+        html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
+        .catch(err => {
+            document.getElementById('reader').innerHTML = '<div class="alert alert-danger m-3">Không thể mở Camera. Vui lòng cấp quyền truy cập máy ảnh cho trình duyệt!</div>';
+        });
+    });
+</script>
+
+<%- include('footer') %>

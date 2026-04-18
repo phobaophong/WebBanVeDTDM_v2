@@ -1,0 +1,176 @@
+<%- include('header') %>
+
+<style>
+    /* Style cho Card Đơn Hàng */
+    .order-card {
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid #eaeaea;
+    }
+    .order-header {
+        background-color: #f8f9fa;
+        border-left: 5px solid #0d6efd;
+    }
+    
+    /* Style cho Tấm Vé */
+    .ticket-card {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #eaeaea;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        transition: transform 0.2s;
+        background: #fff;
+    }
+    .ticket-card:hover {
+        transform: translateY(-3px);
+    }
+    .ticket-header {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+        color: white;
+        padding: 12px 15px;
+        position: relative;
+    }
+    
+    /* Đường nét đứt chia cắt vé */
+    .ticket-divider {
+        border-top: 2px dashed #dee2e6;
+        position: relative;
+        margin: 0 15px;
+    }
+    .ticket-divider::before, .ticket-divider::after {
+        content: '';
+        position: absolute; top: -10px; width: 20px; height: 20px;
+        background-color: #f8f9fa; border-radius: 50%;
+    }
+    .ticket-divider::before { left: -25px; }
+    .ticket-divider::after { right: -25px; }
+    
+    .qr-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: white;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #eaeaea;
+        margin: 0 auto;
+        width: 140px;
+        height: 140px;
+    }
+</style>
+
+<div class="container mt-4 mb-5" style="min-height: 60vh;">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <h4 class="fw-bold text-primary mb-0"><i class="bi bi-wallet2 me-2"></i>Kho Vé Của Tôi</h4>
+    </div>
+
+    <% if (donHang.length === 0) { %>
+        <div class="text-center py-5 bg-white rounded-4 shadow-sm border">
+            <img src="https://cdn-icons-png.flaticon.com/512/1169/1169992.png" width="100" class="opacity-50 mb-3">
+            <h5 class="text-secondary fw-bold">Ví vé của bạn đang trống!</h5>
+            <p class="text-muted small">Bạn chưa mua tấm vé nào. Hãy chọn một trận đấu rực lửa và đặt vé ngay.</p>
+            <a href="/" class="btn btn-primary rounded-pill px-4 mt-2">Xem lịch thi đấu</a>
+        </div>
+    <% } else { %>
+        
+        <% donHang.forEach(dh => { %>
+            
+            <% if(dh.TranDau) { %>
+                <div class="order-card mb-5 shadow-sm bg-white">
+                    
+                    <div class="order-header p-3 p-md-4 border-bottom d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+                        <div class="mb-3 mb-md-0">
+                            <h5 class="fw-bold text-dark mb-1 text-uppercase">
+                                <i class="bi bi-trophy-fill text-warning me-2"></i><%= dh.TranDau.DoiNha %> vs <%= dh.TranDau.DoiKhach %>
+                            </h5>
+                            <p class="text-muted small mb-0">
+                                <i class="bi bi-bag-check-fill text-success me-1"></i> Ngày mua: <%= new Date(dh.NgayMua).toLocaleString('vi-VN') %>
+                            </p>
+                        </div>
+                        <div class="text-md-end">
+                            <span class="badge bg-primary rounded-pill px-3 py-2 fs-6 mb-1 shadow-sm">
+                                Tổng thanh toán: <%= dh.TongTien.toLocaleString('vi-VN') %>đ
+                            </span>
+                            <p class="text-muted small fw-bold mb-0 mt-1">Loại vé: <%= dh.TenHangVe %> - Số lượng: <%= dh.SoLuong %></p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-light">
+                        <div class="row g-4">
+                            
+                            <% dh.DanhSachMaVe.forEach((ve, index) => { %>
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="ticket-card h-100 d-flex flex-column">
+                                        
+                                        <div class="ticket-header d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <% if(ve.TrangThai === 'Chưa sử dụng') { %>
+                                                    <span class="badge bg-success shadow-sm">Chưa sử dụng</span>
+                                                <% } else if(ve.TrangThai === 'Đã sử dụng') { %>
+                                                    <span class="badge bg-danger shadow-sm">Đã sử dụng</span>
+                                                <% } else if(ve.TrangThai === 'Quá hạn') { %>
+                                                    <span class="badge bg-secondary shadow-sm opacity-75">Đã quá hạn</span>
+                                                <% } else { %>
+                                                    <span class="badge bg-info shadow-sm"><%= ve.TrangThai %></span>
+                                                <% } %>
+                                            </div>
+                                            <span class="small fw-bold opacity-75"><i class="bi bi-hash"></i><%= index + 1 %></span>
+                                        </div>
+
+                                        <div class="p-3 text-center bg-white flex-grow-1">
+                                            <p class="small text-muted mb-1"><i class="bi bi-clock-fill text-primary me-1"></i> <%= new Date(dh.TranDau.ThoiGian).toLocaleString('vi-VN') %></p>
+                                            <p class="small text-muted mb-0"><i class="bi bi-geo-alt-fill text-danger me-1"></i> Sân <%= dh.TranDau.SanVanDong %></p>
+                                        </div>
+
+                                        <div class="ticket-divider bg-white"></div>
+
+                                        <div class="p-3 text-center bg-white">
+                                            <p class="small text-muted mb-2 fw-bold">MÃ SOÁT VÉ</p>
+                                            
+                                            <% if(ve.TrangThai === 'Quá hạn') { %>
+                                                <div class="qr-container shadow-sm qrcode-box opacity-25" data-code="<%= ve.MaCode %>"></div>
+                                                <h5 class="fw-bold mt-3 text-secondary text-decoration-line-through tracking-widest"><%= ve.MaCode %></h5>
+                                            <% } else { %>
+                                                <div class="qr-container shadow-sm qrcode-box" data-code="<%= ve.MaCode %>"></div>
+                                                <h5 class="fw-bold mt-3 text-primary tracking-widest"><%= ve.MaCode %></h5>
+                                            <% } %>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            <% }) %>
+
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+
+        <% }) %>
+    <% } %>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<script>
+    // Hàm này chạy ngay sau khi trang web load xong HTML
+    document.addEventListener("DOMContentLoaded", function() {
+        var qrBoxes = document.querySelectorAll('.qrcode-box');
+        
+        qrBoxes.forEach(function(box) {
+            // Lấy mã code (VD: TICK-123456) từ thuộc tính data-code
+            var codeText = box.getAttribute('data-code');
+            
+            // Lệnh yêu cầu thư viện vẽ mã QR vào thẻ div tương ứng
+            new QRCode(box, {
+                text: codeText,
+                width: 120,
+                height: 120,
+                colorDark : "#000000",
+                colorLight : "#ffffff",
+                correctLevel : QRCode.CorrectLevel.H
+            });
+        });
+    });
+</script>
+
+<%- include('footer') %>

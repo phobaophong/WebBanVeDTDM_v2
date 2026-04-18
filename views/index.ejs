@@ -1,0 +1,267 @@
+<%- include('header') %>
+
+    <style>
+        /* Custom CSS cho trang chủ */
+        .hero-banner {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background: url('https://www.transparenttextures.com/patterns/carbon-fibre.png') opacity 0.3;
+            z-index: 1;
+        }
+
+        .match-card {
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 109, 255, 0.15) !important;
+            border-color: #0d6efd;
+        }
+
+        .team-logo-wrap {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .team-logo {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .vs-circle {
+            width: 35px;
+            height: 35px;
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            color: #6c757d;
+            margin: 0 auto;
+        }
+    </style>
+
+    <div class="hero-banner shadow-sm mb-4 p-4 p-md-5 text-white position-relative">
+        <div class="row align-items-center position-relative" style="z-index: 2;">
+            <div class="col-md-8">
+                <span class="badge bg-warning text-dark mb-2 px-3 py-2 rounded-pill fw-bold"><i
+                        class="bi bi-star-fill"></i> Mùa Giải 2024-2025</span>
+                <h1 class="fw-bold display-5 mb-3">Cháy Hết Mình Cùng Đam Mê!</h1>
+                <p class="lead mb-0 opacity-75">Hệ thống đặt vé bóng đá hàng đầu. Đảm bảo uy tín, an toàn và nhanh
+                    chóng. Sở hữu ngay tấm vé đến các sân vận động cuồng nhiệt nhất Châu Âu.</p>
+            </div>
+            <div class="col-md-4 text-center d-none d-md-block opacity-50">
+                <i class="bi bi-trophy" style="font-size: 8rem;"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-3">
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-dark text-white fw-bold py-3 rounded-top-4 border-0">
+                    <i class="bi bi-funnel-fill me-2 text-warning"></i> BỘ LỌC TÌM KIẾM
+                </div>
+                <div class="card-body bg-light">
+                    <form action="/" method="GET">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary small text-uppercase">Giải đấu</label>
+                            <select name="giaidau" class="form-select border-primary shadow-sm"
+                                onchange="this.form.submit()">
+                                <option value="">-- Tất cả giải đấu --</option>
+                                <% danhSachGiaiDau.forEach(giai=> { %>
+                                    <option value="<%= giai %>" <%=giaidauDaChon===giai ? 'selected' : '' %>><%= giai %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold text-secondary small text-uppercase">Đội bóng</label>
+                            <div class="border rounded-3 p-2 bg-white" style="max-height: 250px; overflow-y: auto;">
+                                <% if(danhSachDoiBong.length===0) { %>
+                                    <small class="text-muted fst-italic">Đang cập nhật...</small>
+                                    <% } else { %>
+                                        <% danhSachDoiBong.forEach(doi=> { %>
+                                            <div class="form-check mb-1">
+                                                <input class="form-check-input border-secondary" type="checkbox"
+                                                    name="doi" value="<%= doi %>" id="doi_<%= doi %>"
+                                                    <%=doiDaChon.includes(doi) ? 'checked' : '' %>>
+                                                <label class="form-check-label small" for="doi_<%= doi %>">
+                                                    <%= doi %>
+                                                </label>
+                                            </div>
+                                            <% }) %>
+                                                <% } %>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm py-2 rounded-pill"><i
+                                class="bi bi-search me-1"></i> ÁP DỤNG</button>
+                        <a href="/"
+                            class="btn btn-outline-secondary w-100 btn-sm mt-2 rounded-pill text-decoration-none">Xóa bộ
+                            lọc</a>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card shadow-sm border-0 rounded-4 mb-4">
+                <div class="card-header bg-white fw-bold py-3 border-bottom text-primary">
+                    <i class="bi bi-newspaper me-2"></i> TIN TỨC NỔI BẬT
+                </div>
+                <div class="list-group list-group-flush rounded-bottom-4">
+                    <a href="#" class="list-group-item list-group-item-action p-3 border-0 border-bottom">
+                        <h6 class="mb-1 fw-bold small text-dark">Mở bán vé trận Derby Manchester</h6>
+                        <small class="text-danger"><i class="bi bi-clock me-1"></i>2 giờ trước</small>
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action p-3 border-0 border-bottom">
+                        <h6 class="mb-1 fw-bold small text-dark">Hướng dẫn check-in QR Code qua cửa</h6>
+                        <small class="text-muted"><i class="bi bi-clock me-1"></i>5 giờ trước</small>
+                    </a>
+                </div>
+            </div>
+
+            <div
+                class="card shadow-sm border-0 rounded-4 bg-primary text-white p-4 text-center position-relative overflow-hidden">
+                <i class="bi bi-headset position-absolute opacity-25"
+                    style="font-size: 6rem; right: -20px; bottom: -20px;"></i>
+                <h6 class="fw-bold position-relative z-1 mb-3 text-uppercase">Hỗ trợ khách hàng</h6>
+                <h4 class="fw-bold position-relative z-1 mb-1 text-warning">0866.675.978</h4>
+                <small class="position-relative z-1 opacity-75">support@ticketseuro.vn</small>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-end mb-3 border-bottom pb-2">
+                <h4 class="mb-0 fw-bold text-dark text-uppercase"><i class="bi bi-calendar-event text-primary me-2"></i>
+                    Trận Đấu Sắp Diễn Ra</h4>
+                <span class="badge bg-primary rounded-pill px-3 py-2">
+                    <%= trandau.length %> Trận đang mở
+                </span>
+            </div>
+
+            <% if(trandau.length===0) { %>
+                <div class="text-center py-5 bg-white rounded-4 shadow-sm mt-3">
+                    <img src="https://cdn-icons-png.flaticon.com/512/7486/7486747.png" width="120"
+                        class="opacity-50 mb-3" alt="No matches">
+                    <h5 class="text-secondary fw-bold">Hiện không có trận đấu nào sắp diễn ra!</h5>
+                    <p class="text-muted small">Vui lòng thử thay đổi bộ lọc hoặc chọn giải đấu khác.</p>
+                    <a href="/" class="btn btn-outline-primary rounded-pill px-4 mt-2">Làm mới danh sách</a>
+                </div>
+                <% } else { %>
+                    <div class="row row-cols-1 row-cols-md-2 g-4">
+                        <% trandau.forEach(td=> { %>
+                            <div class="col">
+                                <div class="card h-100 match-card rounded-4 bg-white border-0 shadow-sm">
+
+                                    <div
+                                        class="card-header bg-transparent border-0 pt-3 pb-0 d-flex justify-content-between align-items-center">
+                                        <span
+                                            class="badge <%= td.GiaiDau === 'Ngoại hạng Anh' ? 'bg-primary' : 'bg-dark' %> rounded-pill px-3 py-2">
+                                            <%= td.GiaiDau %>
+                                        </span>
+                                        <% if(td.Hot) { %>
+                                            <span class="badge bg-danger rounded-pill px-2 py-1"><i
+                                                    class="bi bi-fire"></i> HOT</span>
+                                            <% } %>
+                                    </div>
+
+                                    <div class="card-body pb-2 mt-2">
+                                        <div class="row align-items-center text-center px-2">
+                                            <div class="col-5 px-1">
+                                                <div class="team-logo-wrap mb-2">
+                                                    <img src="<%= td.LogoNha || 'https://cdn-icons-png.flaticon.com/512/534/534125.png' %>"
+                                                        class="team-logo" alt="<%= td.DoiNha %>">
+                                                </div>
+                                                <h6 class="fw-bold mb-0 text-dark small">
+                                                    <%= td.DoiNha %>
+                                                </h6>
+                                            </div>
+                                            <div class="col-2 px-0">
+                                                <div class="vs-circle shadow-sm">VS</div>
+                                            </div>
+                                            <div class="col-5 px-1">
+                                                <div class="team-logo-wrap mb-2">
+                                                    <img src="<%= td.LogoKhach || 'https://cdn-icons-png.flaticon.com/512/534/534125.png' %>"
+                                                        class="team-logo" alt="<%= td.DoiKhach %>">
+                                                </div>
+                                                <h6 class="fw-bold mb-0 text-dark small">
+                                                    <%= td.DoiKhach %>
+                                                </h6>
+                                            </div>
+                                        </div>
+
+                                        <hr class="border-secondary opacity-10 mx-3 my-3">
+
+                                        <div class="px-2">
+                                            <p class="mb-1 small text-secondary"><i
+                                                    class="bi bi-clock-history text-primary me-2"></i><strong>
+                                                    <%= new Date(td.ThoiGian).toLocaleTimeString('vi-VN',
+                                                        {hour: '2-digit' , minute:'2-digit'}) %>
+                                                </strong> - <%= new Date(td.ThoiGian).toLocaleDateString('vi-VN') %>
+                                            </p>
+                                            <p class="mb-0 small text-secondary text-truncate"><i
+                                                    class="bi bi-geo-alt-fill text-danger me-2"></i>Sân <strong>
+                                                    <%= td.SanVanDong %>
+                                                </strong></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="card-footer bg-transparent border-0 p-3 pt-0">
+                                        <div
+                                            class="bg-light rounded-4 p-2 d-flex justify-content-between align-items-center border">
+
+                                            <% if(td.HangVe && td.HangVe.length> 0) {
+                                                let minPrice = Math.min(...td.HangVe.map(v => v.GiaTien));
+                                                %>
+                                                <div class="ps-2">
+                                                    <small class="text-muted d-block" style="font-size: 0.7rem;">Giá
+                                                        từ</small>
+                                                    <span class="text-danger fw-bold fs-6">
+                                                        <%= minPrice.toLocaleString('vi-VN') %>đ
+                                                    </span>
+                                                </div>
+                                                <a href="/trandau/chitiet/<%= td._id %>"
+                                                    class="btn btn-primary btn-sm rounded-pill px-3 fw-bold shadow-sm">Mua
+                                                    Vé <i class="bi bi-arrow-right-short"></i></a>
+
+                                                <% } else { %>
+                                                    <div class="ps-2">
+                                                        <span class="text-muted small fw-bold"><i
+                                                                class="bi bi-lock-fill me-1"></i> Chưa mở bán</span>
+                                                    </div>
+                                                    <button class="btn btn-secondary btn-sm rounded-pill px-3"
+                                                        disabled>Chi Tiết</button>
+                                                    <% } %>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <% }) %>
+                    </div>
+                    <% } %>
+        </div>
+    </div>
+
+    <%- include('footer') %>

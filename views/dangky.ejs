@@ -1,0 +1,44 @@
+<%- include('header') %>
+
+<div class="row justify-content-center align-items-center" style="min-height: 60vh;">
+    <div class="col-md-5 col-lg-4">
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-header bg-primary text-white text-center py-3 border-0 rounded-top-4">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-person-plus-fill me-2"></i>ĐĂNG KÝ TÀI KHOẢN</h5>
+            </div>
+            <div class="card-body p-4 bg-light rounded-bottom-4">
+                <%- message %>
+                <form action="/auth/dangky" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-secondary">Họ và tên <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control border-primary" name="HoVaTen" required placeholder="Ví dụ: Phó Bảo Phong">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-secondary">Email</label>
+                        <input type="email" class="form-control border-primary" name="Email" placeholder="Ví dụ: phong@gmail.com">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-secondary">Tên đăng nhập <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control border-primary" name="TenDangNhap" required placeholder="Viết liền không dấu...">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold small text-secondary">Mật khẩu <span class="text-danger">*</span></label>
+                        <input type="password" class="form-control border-primary" name="MatKhau" required placeholder="Nhập mật khẩu...">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 fw-bold shadow-sm py-2 rounded-pill">TẠO TÀI KHOẢN</button>
+                </form>
+                
+                <div class="text-center mt-4 small">
+                    <span class="text-muted">Đã có tài khoản?</span> 
+                    <a href="/auth/dangnhap" class="text-decoration-none fw-bold text-primary">Đăng nhập ngay</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('footer') %>
