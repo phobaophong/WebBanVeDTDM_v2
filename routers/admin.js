@@ -14,15 +14,14 @@ var kiemTraAdmin = (req, res, next) => {
         res.redirect('/auth/dangnhap');
     }
 };
+router.use(kiemTraAdmin);
 
-// bảng điều khiển thốg kê
+// bảng điều khiển thốg kê (mặc định khi vào /admin sẽ hiển thị trang này)
 router.get('/', async (req, res) => {
     try {
-        // đếm
+        // dữ liệu tổng quan
         var tongTran = await TranDau.countDocuments();
         var tongNguoiDung = await NguoiDung.countDocuments({ QuyenHan: 'user' });
-
-        // doanh thu
         var cacDonHang = await DonHang.find().exec();
         var tongDoanhThu = 0;
         var tongVe = 0;
@@ -32,36 +31,62 @@ router.get('/', async (req, res) => {
             tongVe += dh.SoLuong;
         });
 
+        // biểu đồ doanh thu 7 ngày gần nhất (cột)
+        var labels7Ngay = [];
+        var data7Ngay = [0, 0, 0, 0, 0, 0, 0];
+        var homNay = new Date();
+        
+        // mảng 7 ngày
+        for (let i = 6; i >= 0; i--) {
+            let d = new Date();
+            d.setDate(homNay.getDate() - i);
+            labels7Ngay.push(d.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }));
+        }
+
+        // lọc đơn hàng 7 ngày gần nhất
+        var donHang7Ngay = await DonHang.find({
+            NgayMua: { $gte: new Date(new Date().setDate(homNay.getDate() - 7)) }
+        });
+
+        donHang7Ngay.forEach(dh => {
+            let dateStr = new Date(dh.NgayMua).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
+            let idx = labels7Ngay.indexOf(dateStr);
+            if(idx !== -1) {
+                data7Ngay[idx] += dh.TongTien;
+            }
+        });
+
+        // biểu đồ tròn
+        var thongKeGiaiDau = await TranDau.aggregate([
+            { $group: { _id: "$GiaiDau", count: { $sum: 1 } } }
+        ]);
+        var labelsGiaiDau = thongKeGiaiDau.map(item => item._id);
+        var dataGiaiDau = thongKeGiaiDau.map(item => item.count);
+
+        // bảng trận đấu hot
+        var tranHot = await TranDau.find({ TrangThai: 'Sắp diễn ra' })
+            .sort({ Hot: -1, ThoiGian: 1 })
+            .limit(5);
+
+        // đổ ra dashboard
         res.render('../admin/index', {
             title: 'Bảng Điều Khiển (Dashboard)',
             tongTran: tongTran,
             tongNguoiDung: tongNguoiDung,
             tongDoanhThu: tongDoanhThu,
-            tongVe: tongVe
+            tongVe: tongVe,
+            labels7Ngay: JSON.stringify(labels7Ngay),
+            data7Ngay: JSON.stringify(data7Ngay),
+            labelsGiaiDau: JSON.stringify(labelsGiaiDau),
+            dataGiaiDau: JSON.stringify(dataGiaiDau),
+            tranHot: tranHot
         });
     } catch (error) {
         console.log(error);
         res.send('Lỗi tải Dashboard!');
     }
 });
-
-// quản lý trận đấu (get)
-router.get('/trandau', async (req, res) => {
-    try {
-        // lấy ds trận đấu
-        var danhSachTranDau = await TranDau.find().sort({ ThoiGian: -1 }).exec();
-
-        res.render('../admin/trandau', {
-            title: 'Quản lý Trận đấu',
-            trandau: danhSachTranDau
-        });
-    } catch (error) {
-        console.log(error);
-        req.session.error = 'Lỗi truy xuất dữ liệu trận đấu.';
-        res.redirect('/admin');
-    }
-});
-
+// thêm trận
 router.get('/themtran', async (req, res) => {
     try {
         var giaidauDaChon = req.query.giaidau; 

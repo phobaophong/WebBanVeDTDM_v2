@@ -31,7 +31,7 @@
                             API lấy vòng tiếp theo.</p>
                         <a href="/admin/api-fetch?giaidau=<%= giaidauDaChon %>"
                             class="btn btn-success w-100 fw-bold shadow-sm">
-                            <i class="bi bi-lightning-charge-fill me-1"></i> KẾT NỐI API & KÉO VÒNG MỚI
+                            <i class="bi bi-lightning-charge-fill me-1"></i> LẤY DỮ LIỆU MỚI 
                         </a>
                         <% } %>
                 </div>
@@ -84,13 +84,33 @@
                                                     <td class="small">
                                                         <%= new Date(td.ThoiGian).toLocaleString('vi-VN') %>
                                                     </td>
+
                                                     <td class="fw-bold text-end w-25">
-                                                        <%= td.DoiNha %>
+                                                        <div class="d-flex justify-content-end align-items-center">
+                                                            <span>
+                                                                <%= td.DoiNha %>
+                                                            </span>
+                                                            <% if(td.LogoNha) { %>
+                                                                <img src="<%= td.LogoNha %>" alt="<%= td.DoiNha %>" class="ms-2"
+                                                                    style="width: 25px; height: 25px; object-fit: contain;">
+                                                                <% } %>
+                                                        </div>
                                                     </td>
-                                                    <td class="small text-muted">-</td>
+                                                    
+                                                    <td class="small text-muted text-center">-</td>
+                                                    
                                                     <td class="fw-bold text-start w-25">
-                                                        <%= td.DoiKhach %>
+                                                        <div class="d-flex justify-content-start align-items-center">
+                                                            <% if(td.LogoKhach) { %>
+                                                                <img src="<%= td.LogoKhach %>" alt="<%= td.DoiKhach %>" class="me-2"
+                                                                    style="width: 25px; height: 25px; object-fit: contain;">
+                                                                <% } %>
+                                                                    <span>
+                                                                        <%= td.DoiKhach %>
+                                                                    </span>
+                                                        </div>
                                                     </td>
+
                                                     <td>
                                                         <span
                                                             class="badge <%= td.TrangThai === 'Đã kết thúc' ? 'bg-secondary' : 'bg-success' %>">
