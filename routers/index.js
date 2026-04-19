@@ -3,26 +3,30 @@ var router = express.Router();
 var TranDau = require('../models/trandau');
 var DonHang = require('../models/donhang');
 var NguoiDung = require('../models/nguoidung');
+
+// 1. TÍCH HỢP VŨ KHÍ MỚI: CLOUDINARY
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const dir = './public/images/avatars';
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
-if (!fs.existsSync(dir)){
-    fs.mkdirSync(dir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'public/images/avatars')
-    },
-    filename: function (req, file, cb) {
-        cb(null, req.session.MaNguoiDung + '-' + Date.now() + path.extname(file.originalname))
-    }
+// Cấu hình chìa khóa Cloudinary
+cloudinary.config({ 
+  cloud_name: 'dg9sipoit', 
+  api_key: '933646499592579', 
+  api_secret: '5FVddZBbnpHbN7xdrWRN2d2gdp0' 
 });
+
+// Thiết lập kho lưu trữ trên mây
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'avatars', 
+    allowedFormats: ['jpg', 'png', 'jpeg'],
+    public_id: (req, file) => req.session.MaNguoiDung + '-' + Date.now()
+  },
+});
+
 const upload = multer({ storage: storage });
-
-
 
 // trang chủ (get)
 router.get('/', async (req, res) => {
@@ -151,6 +155,7 @@ router.get('/nguoidung/kho-ve', async (req, res) => {
         res.redirect('/');
     }
 });
+
 // profile
 router.get('/nguoidung/profile', async (req, res) => {
     if (!req.session.MaNguoiDung) return res.redirect('/auth/dangnhap');
@@ -173,8 +178,9 @@ router.post('/nguoidung/profile', upload.single('Avatar'), async (req, res) => {
         user.HoVaTen = req.body.HoVaTen;
         user.SoDienThoai = req.body.SoDienThoai;
         
+        // cloudinary 
         if (req.file) {
-            user.Avatar = '/images/avatars/' + req.file.filename;
+            user.Avatar = req.file.path; 
             req.session.Avatar = user.Avatar; 
         }
         
@@ -188,4 +194,5 @@ router.post('/nguoidung/profile', upload.single('Avatar'), async (req, res) => {
         res.send("<script>alert('Có lỗi xảy ra khi cập nhật!'); window.history.back();</script>");
     }
 });
+
 module.exports = router;
