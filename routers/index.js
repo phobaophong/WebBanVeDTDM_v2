@@ -31,7 +31,11 @@ const upload = multer({ storage: storage });
 // trang chủ (get)
 router.get('/', async (req, res) => {
     try {
-        // tìm trận đấu đang sắp diễn ra
+        await TranDau.updateMany(
+            { TrangThai: 'Sắp diễn ra', ThoiGian: { $lt: new Date() } },
+            { $set: { TrangThai: 'Đã kết thúc' } }
+        );
+        
         var dieuKienLoc = { TrangThai: 'Sắp diễn ra' };
 
         if (req.query.giaidau) {
