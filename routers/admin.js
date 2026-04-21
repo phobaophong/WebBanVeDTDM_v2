@@ -165,13 +165,13 @@ router.get('/api-fetch', async (req, res) => {
 
         var configAPI = {
             method: 'get',
-            url: 'https://v3.football.api-sports.io/fixtures',
+            url: 'https://v3.football.api-sports.io/fixtures', 
             params: {
                 league: leagueId,
                 season: 2024 
             },
             headers: {
-                'x-apisports-key': 'bcf3507c3e8b246a031d44e67a66e000'
+                'x-apisports-key': '24c0537e571e37887a6fab4415f245d2'// key
             }
         };
 
@@ -287,7 +287,6 @@ router.get('/api-fetch', async (req, res) => {
 // thay đổi trạng thái nổi bật
 router.post('/trandau/toggle-hot/:id', async (req, res) => {
     try {
-        // 1. TẠO ĐƯỜNG DẪN CHUYỂN HƯỚNG THÔNG MINH
         // Nếu lúc gửi form có kèm tên giải đấu, ta sẽ nối nó vào link chuyển hướng
         let linkChuyenHuong = '/admin/themtran';
         if (req.query.giaidau) {
