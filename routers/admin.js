@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
     try {
         // dữ liệu tổng quan
         var tongTran = await TranDau.countDocuments();
-        var tongNguoiDung = await NguoiDung.countDocuments({ QuyenHan: 'user' });
+        var tongNguoiDung = await NguoiDung.countDocuments({ QuyenHan: { $ne: 'admin' } });
         var cacDonHang = await DonHang.find().exec();
         var tongDoanhThu = 0;
         var tongVe = 0;
@@ -342,7 +342,40 @@ router.get('/taove', async (req, res) => {
         res.redirect('/admin');
     }
 });
+// tạo vé thủ công cho 1 trận
+router.post('/taove-thucong/:id', async (req, res) => {
+    try {
+        var idTran = req.params.id;
+        var giaidauDaChon = req.query.giaidau;
+        var tranDau = await TranDau.findById(idTran).exec();
 
+        // lấy và ép kiểu số lượng vé từ form
+        var slVIP = parseInt(req.body.slVIP);
+        var slA = parseInt(req.body.slA);
+        var slB = parseInt(req.body.slB);
+        var slC = parseInt(req.body.slC);
+        var slD = parseInt(req.body.slD);
+
+        if (tranDau && tranDau.TrangThai === 'Sắp diễn ra') {
+            tranDau.HangVe = [
+                { TenHang: 'VIP (Phòng kính)', GiaTien: parseInt(req.body.giaVIP), SoLuong: slVIP, SoLuongCon: slVIP },
+                { TenHang: 'Khán đài A', GiaTien: parseInt(req.body.giaA), SoLuong: slA, SoLuongCon: slA },
+                { TenHang: 'Khán đài B', GiaTien: parseInt(req.body.giaB), SoLuong: slB, SoLuongCon: slB },
+                { TenHang: 'Khán đài C', GiaTien: parseInt(req.body.giaC), SoLuong: slC, SoLuongCon: slC },
+                { TenHang: 'Khán đài D', GiaTien: parseInt(req.body.giaD), SoLuong: slD, SoLuongCon: slD }
+            ];
+            
+            await tranDau.save();
+        }
+        
+   
+        res.redirect('/admin/taove?giaidau=' + encodeURIComponent(giaidauDaChon));
+
+    } catch (error) {
+        console.log(error);
+        res.redirect('/admin/taove');
+    }
+});
 // 1 trận cụ thể
 router.get('/taovenhanh/:id', async (req, res) => {
     try {
