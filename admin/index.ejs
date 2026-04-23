@@ -1,7 +1,6 @@
 <%- include('header') %>
 
 <style>
-    /* 1. Nâng cấp các thẻ Thống kê với Gradient */
     .stat-card {
         border: none;
         border-radius: 15px;
@@ -28,7 +27,6 @@
     .bg-grad-orange { background: linear-gradient(135deg, #ff9966 0%, #ff5e62 100%); }
     .bg-grad-purple { background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%); }
 
-    /* 2. Thao tác nhanh */
     .quick-action-btn {
         transition: all 0.2s;
         border: 1px solid #eee;
@@ -42,7 +40,6 @@
         color: #0d6efd;
     }
 
-    /* 3. Biểu đồ */
     .chart-container {
         background: white;
         padding: 20px;
@@ -193,14 +190,13 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // 0. Bóc tách dữ liệu từ thẻ div giấu kín ở trên
     const dataBox = document.getElementById('hiddenChartData');
     const labelsData = JSON.parse(dataBox.dataset.labels);
     const revenueData = JSON.parse(dataBox.dataset.revenue);
     const leagueLabels = JSON.parse(dataBox.dataset.leaguelabels);
     const leagueData = JSON.parse(dataBox.dataset.leaguedata);
 
-    // 1. Biểu đồ Doanh thu (DỮ LIỆU THẬT)
+    // Biểu đồ Doanh thu 7 ngày
     const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
     new Chart(ctxRevenue, {
         type: 'line',
@@ -223,7 +219,7 @@
         }
     });
 
-    // 2. Biểu đồ Tỉ lệ Giải đấu (DỮ LIỆU THẬT)
+    // Biểu đồ Tỉ lệ vé theo Giải đấu
     const ctxLeague = document.getElementById('leagueChart').getContext('2d');
     new Chart(ctxLeague, {
         type: 'doughnut',

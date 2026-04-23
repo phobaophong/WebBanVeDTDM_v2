@@ -52,7 +52,6 @@
             const data = await response.json();
 
             if (data.success) {
-                // VÉ HỢP LỆ (Màu xanh)
                 resultBox.className = "card-body d-flex flex-column justify-content-center bg-success text-white p-4";
                 resultBox.innerHTML = `
                     <div class="text-center mb-3"><i class="bi bi-check-circle-fill" style="font-size: 4rem;"></i></div>
@@ -65,7 +64,6 @@
                     </div>
                 `;
             } else {
-                // VÉ LỖI / ĐÃ DÙNG (Màu đỏ)
                 resultBox.className = "card-body d-flex flex-column justify-content-center align-items-center bg-danger text-white p-4";
                 resultBox.innerHTML = `
                     <i class="bi bi-x-octagon-fill mb-3" style="font-size: 4rem;"></i>
@@ -79,7 +77,6 @@
             resultBox.innerHTML = '<h5 class="text-danger">Lỗi kết nối máy chủ!</h5>';
         }
 
-        // Tạm dừng 3 giây trước khi cho phép quét vé tiếp theo
         setTimeout(() => {
             isScanning = false;
             resultBox.className = "card-body d-flex flex-column justify-content-center align-items-center bg-light";
@@ -87,7 +84,7 @@
         }, 3000);
     }
 
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         const html5QrCode = new Html5Qrcode("reader");
         const qrCodeSuccessCallback = (decodedText, decodedResult) => {
             kiemTraVe(decodedText);
@@ -95,9 +92,9 @@
         const config = { fps: 10, qrbox: { width: 250, height: 250 } };
 
         html5QrCode.start({ facingMode: "environment" }, config, qrCodeSuccessCallback)
-        .catch(err => {
-            document.getElementById('reader').innerHTML = '<div class="alert alert-danger m-3">Không thể mở Camera. Vui lòng cấp quyền truy cập máy ảnh cho trình duyệt!</div>';
-        });
+            .catch(err => {
+                document.getElementById('reader').innerHTML = '<div class="alert alert-danger m-3">Không thể mở Camera. Vui lòng cấp quyền truy cập máy ảnh cho trình duyệt!</div>';
+            });
     });
 </script>
 

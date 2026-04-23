@@ -4,26 +4,26 @@ var TranDau = require('../models/trandau');
 var DonHang = require('../models/donhang');
 var NguoiDung = require('../models/nguoidung');
 
-// 1. TÍCH HỢP VŨ KHÍ MỚI: CLOUDINARY
+
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 // Cấu hình chìa khóa Cloudinary
-cloudinary.config({ 
-  cloud_name: 'dg9sipoit', 
-  api_key: '933646499592579', 
-  api_secret: '5FVddZBbnpHbN7xdrWRN2d2gdp0' 
+cloudinary.config({
+    cloud_name: 'dg9sipoit',
+    api_key: '933646499592579',
+    api_secret: '5FVddZBbnpHbN7xdrWRN2d2gdp0'
 });
 
 // Thiết lập kho lưu trữ trên mây
 const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'avatars', 
-    allowedFormats: ['jpg', 'png', 'jpeg'],
-    public_id: (req, file) => req.session.MaNguoiDung + '-' + Date.now()
-  },
+    cloudinary: cloudinary,
+    params: {
+        folder: 'avatars',
+        allowedFormats: ['jpg', 'png', 'jpeg'],
+        public_id: (req, file) => req.session.MaNguoiDung + '-' + Date.now()
+    },
 });
 
 const upload = multer({ storage: storage });

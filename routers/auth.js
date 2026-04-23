@@ -11,38 +11,38 @@ passport.use(new GoogleStrategy({
     clientID: '51334060724-iotk0ov11rsaqg4o446to24k7nrnb5vs.apps.googleusercontent.com',
     clientSecret: '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',
     callbackURL: "https://webbanvedtdm-v2.onrender.com/auth/google/callback"
-  },
-  async function(accessToken, refreshToken, profile, cb) {
-      try {
-          let user = await NguoiDung.findOne({ GoogleId: profile.id });
-          if (user) return cb(null, user); 
+},
+    async function (accessToken, refreshToken, profile, cb) {
+        try {
+            let user = await NguoiDung.findOne({ GoogleId: profile.id });
+            if (user) return cb(null, user);
 
-          let email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
-          
-          if (email) {
-              user = await NguoiDung.findOne({ Email: email });
-              if (user) {
-                  user.GoogleId = profile.id;
-                  await user.save();
-                  return cb(null, user);
-              }
-          }
+            let email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
 
-          let newUser = new NguoiDung({
-              GoogleId: profile.id,
-              HoVaTen: profile.displayName,
-              Email: email,
-              TenDangNhap: email ? email.split('@')[0] + '_' + Math.floor(Math.random() * 1000) : 'user_' + profile.id,
-              SoDu: 0,
-              QuyenHan: 'nguoidung',
-              TrangThai: true
-          });
-          await newUser.save();
-          return cb(null, newUser);
-      } catch (err) {
-          return cb(err, null);
-      }
-  }
+            if (email) {
+                user = await NguoiDung.findOne({ Email: email });
+                if (user) {
+                    user.GoogleId = profile.id;
+                    await user.save();
+                    return cb(null, user);
+                }
+            }
+
+            let newUser = new NguoiDung({
+                GoogleId: profile.id,
+                HoVaTen: profile.displayName,
+                Email: email,
+                TenDangNhap: email ? email.split('@')[0] + '_' + Math.floor(Math.random() * 1000) : 'user_' + profile.id,
+                SoDu: 0,
+                QuyenHan: 'nguoidung',
+                TrangThai: true
+            });
+            await newUser.save();
+            return cb(null, newUser);
+        } catch (err) {
+            return cb(err, null);
+        }
+    }
 ));
 
 // đăng ký
