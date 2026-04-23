@@ -269,7 +269,6 @@ router.get('/api-fetch', async (req, res) => {
 // thay đổi trạng thái nổi bật
 router.post('/trandau/toggle-hot/:id', async (req, res) => {
     try {
-        // Nếu lúc gửi form có kèm tên giải đấu, ta sẽ nối nó vào link chuyển hướng
         let linkChuyenHuong = '/admin/themtran';
         if (req.query.giaidau) {
             linkChuyenHuong += '?giaidau=' + req.query.giaidau;
@@ -339,6 +338,10 @@ router.post('/taove-thucong/:id', async (req, res) => {
         var slD = parseInt(req.body.slD);
 
         if (tranDau && tranDau.TrangThai === 'Sắp diễn ra') {
+            if (tranDau.HangVe && tranDau.HangVe.length > 0) {
+                return res.redirect('/admin/taove?giaidau=' + encodeURIComponent(giaidauDaChon));
+            }
+
             tranDau.HangVe = [
                 { TenHang: 'VIP (Phòng kính)', GiaTien: parseInt(req.body.giaVIP), SoLuong: slVIP, SoLuongCon: slVIP },
                 { TenHang: 'Khán đài A', GiaTien: parseInt(req.body.giaA), SoLuong: slA, SoLuongCon: slA },
@@ -391,7 +394,7 @@ router.get('/taovenhanh/:id', async (req, res) => {
     }
 });
 
-// tạo hàng loạt
+// tạo hàng loạt cho ca giai dau
 router.get('/taove-hangloat', async (req, res) => {
     try {
         var giaidauDaChon = req.query.giaidau;
