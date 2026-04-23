@@ -1,10 +1,9 @@
 var express = require('express');
 var router = express.Router();
-
-
 var TranDau = require('../models/trandau');
 var NguoiDung = require('../models/nguoidung');
 var DonHang = require('../models/donhang');
+var axios = require('axios');
 
 var kiemTraAdmin = (req, res, next) => {
     if (req.session.MaNguoiDung && req.session.QuyenHan === 'admin') {
@@ -110,7 +109,6 @@ router.get('/themtran', async (req, res) => {
     }
 });
 
-var axios = require('axios');
 var mapSucChua = {
     'Old Trafford': 74310,
     'Emirates Stadium': 60704,
@@ -129,7 +127,18 @@ var mapSucChua = {
 router.get('/api-fetch', async (req, res) => {
     try {
         var giaidauDaChon = req.query.giaidau;
+        var vongToiDa = parseInt(req.query.vongToiDa); 
+
         if (!giaidauDaChon) return res.redirect('/admin/themtran');
+
+        var maxRoundLimit = 38;
+        if (giaidauDaChon === 'Bundesliga' || giaidauDaChon === 'Ligue 1') {
+            maxRoundLimit = 34;
+        }
+        
+        if (vongToiDa > maxRoundLimit) {
+            vongToiDa = maxRoundLimit;
+        }
 
         var mapGiaiDau = {
             'Ngoại hạng Anh': 39,
@@ -175,7 +184,6 @@ router.get('/api-fetch', async (req, res) => {
             }
         };
 
-        // nếu có => lấy vòng tiếp theo
         if (maxVong > 0) {
             configAPI.params.round = `Regular Season - ${maxVong + 1}`;
         }
@@ -188,17 +196,8 @@ router.get('/api-fetch', async (req, res) => {
             return res.redirect('/admin/themtran');
         }
 
-        // nếu trống => lấy đến vòng hiện tại của giải
         if (maxVong === 0) {
-            var mapVongHienTai = {
-                'Ngoại hạng Anh': 33,
-                'La Liga': 31,
-                'Serie A': 32,
-                'Bundesliga': 29,
-                'Ligue 1': 29
-            };
-
-            var vongToiDa = mapVongHienTai[giaidauDaChon] || 10;
+            var limitRound = (vongToiDa && vongToiDa > 0) ? vongToiDa : 1; 
 
             danhSachTranApi = danhSachTranApi.filter(match => {
                 if (!match.league.round) return false;
@@ -207,11 +206,10 @@ router.get('/api-fetch', async (req, res) => {
                 if (!m) return false;
 
                 var round = parseInt(m[0]);
-                return round <= vongToiDa;
+                return round <= limitRound; // Lọc tất cả các trận có vòng <= số admin nhập
             });
         }
 
-        // fake data
         var mapSucChua = {
             'Old Trafford': 74310,
             'Emirates Stadium': 60704,

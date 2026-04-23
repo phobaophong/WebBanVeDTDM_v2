@@ -15,8 +15,7 @@
                     <form action="/admin/themtran" method="GET">
                         <label class="form-label fw-bold small text-secondary">Hệ thống sẽ lọc các trận đã có trong
                             DB:</label>
-                        <select name="giaidau" class="form-select border-primary mb-3 shadow-sm"
-                            onchange="this.form.submit()">
+                        <select name="giaidau" class="form-select border-primary mb-3 shadow-sm" onchange="this.form.submit()">
                             <option value="">-- Vui lòng chọn giải đấu --</option>
                             <% danhSachGiaiDau.forEach(giai=> { %>
                                 <option value="<%= giai %>" <%=giaidauDaChon===giai ? 'selected' : '' %>><%= giai %>
@@ -24,16 +23,37 @@
                                 <% }) %>
                         </select>
                     </form>
-
+        
                     <% if (giaidauDaChon) { %>
                         <hr>
-                        <p class="small text-muted mb-2">Sau khi kiểm tra danh sách bên phải, bấm nút dưới đây để gọi
-                            API lấy vòng tiếp theo.</p>
-                        <a href="/admin/api-fetch?giaidau=<%= giaidauDaChon %>"
-                            class="btn btn-success w-100 fw-bold shadow-sm">
-                            <i class="bi bi-lightning-charge-fill me-1"></i> LẤY DỮ LIỆU MỚI 
-                        </a>
-                        <% } %>
+                        <% if (trandauDb.length === 0) { %>
+                            <% 
+                                var maxRound = 38; // ngoại hạng Anh, laliga, serie a
+                                if (giaidauDaChon === 'Bundesliga' || giaidauDaChon === 'Ligue 1') {
+                                    maxRound = 34; 
+                                }
+                            %>
+                            <form action="/admin/api-fetch" method="GET">
+                                <input type="hidden" name="giaidau" value="<%= giaidauDaChon %>">
+                                <label class="form-label small fw-bold text-secondary">Chọn vòng muốn lấy đến (Tối đa <%= maxRound %> vòng):</label>
+                                <div class="input-group mb-3">
+                                    <input type="number" name="vongToiDa" class="form-control border-success" value="<%= maxRound %>" min="1" max="<%= maxRound %>" required>
+                                    <button type="submit" class="btn btn-success fw-bold shadow-sm">
+                                        <i class="bi bi-cloud-arrow-down-fill me-1"></i> LẤY DỮ LIỆU
+                                    </button>
+                                </div>
+                                <p class="small text-muted text-center mb-0 mt-2">Giải <%= giaidauDaChon %> có tối đa <%= maxRound %> vòng đấu.</p>
+                            </form>
+                        <% } else { %>
+                                <p class="small text-muted mb-2">Hệ thống đã có dữ liệu. Bấm nút dưới đây để tự động gọi API lấy
+                                    vòng tiếp
+                                    theo.</p>
+                                <a href="/admin/api-fetch?giaidau=<%= giaidauDaChon %>"
+                                    class="btn btn-success w-100 fw-bold shadow-sm py-2">
+                                    <i class="bi bi-lightning-charge-fill me-1"></i> KÉO VÒNG TIẾP THEO
+                                </a>
+                                <% } %>
+                                    <% } %>
                 </div>
             </div>
         </div>
