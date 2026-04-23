@@ -169,9 +169,6 @@ router.get('/api-fetch', async (req, res) => {
             }
         });
 
-        // api football
-        var axios = require('axios');
-
         var configAPI = {
             method: 'get',
             url: 'https://v3.football.api-sports.io/fixtures', 
@@ -210,19 +207,6 @@ router.get('/api-fetch', async (req, res) => {
             });
         }
 
-        var mapSucChua = {
-            'Old Trafford': 74310,
-            'Emirates Stadium': 60704,
-            'Anfield': 61276,
-            'Etihad Stadium': 53400,
-            'Stamford Bridge': 40341,
-            'Tottenham Hotspur Stadium': 62850,
-            'St. James\' Park': 52305,
-            'Villa Park': 42682,
-            'Goodison Park': 39572,
-            'London Stadium': 62500,
-            'Mặc định': 30000
-        };
 
         var now = new Date();
         var duLieuInsert = [];
@@ -374,7 +358,7 @@ router.post('/taove-thucong/:id', async (req, res) => {
         res.redirect('/admin/taove');
     }
 });
-// 1 trận cụ thể
+// tạo vé nhanh cho 1 trận cụ thể
 router.get('/taovenhanh/:id', async (req, res) => {
     try {
         var idTran = req.params.id;
@@ -397,7 +381,6 @@ router.get('/taovenhanh/:id', async (req, res) => {
             ];
             await tranDau.save();
 
-            // Sửa điểm chuyển hướng về lại trang taove đang chọn giải
             res.redirect('/admin/taove?giaidau=' + encodeURIComponent(tranDau.GiaiDau));
         } else {
             res.redirect('/admin/taove');
